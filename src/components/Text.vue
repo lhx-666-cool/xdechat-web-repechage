@@ -33,19 +33,6 @@ const mdi = new MarkdownIt({
 mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
 mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
 
-const wrapClass = computed(() => {
-  return [
-    'text-wrap',
-    'min-w-[20px]','max-w-[810px]',
-    'rounded-md',
-    // isMobile.value ? 'p-2' : 'px-3 py-2',
-    'px-3 py-2',
-    'bg-[#f4f6f8]',
-    'dark:bg-[#1e1e20]',
-    'message-reply',
-    
-  ]
-})
 
 const text = computed(() => {
   let value = props.text ?? ''
@@ -54,8 +41,6 @@ const text = computed(() => {
     value= value.replace('\\[',"$$$$")
     value= value.replace('\\]',"$$$$")   
     return mdi.render(value)
-  
-
 })
 function highlightBlock(str: string, lang?: string) {
     console.log(lang)
@@ -104,16 +89,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="text-black" :class="wrapClass">
-    <div ref="textRef" class="leading-relaxed break-words">
-      <div class="markdown-body "  style="--color-fg-default:#24292f"  v-html="text" />
-    </div>
-  </div>
+      <div class="markdown-body"  style="--color-canvas-default:rgba(128, 128, 128, 0.2)"  v-html="text" />
 </template>
 
 <style lang="less">
-@import url(./style.less);
-@import url(./highlight.less);
-@import url(./github-markdown.less);
+@import url(../style/style.less);
+@import url(../style/highlight.less);
+@import url(../style/github-markdown.less);
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="navbar-out">
     <div class="navbar-left">
-      <el-avatar shape="square" src="/icon/loge.svg" />
+      <el-avatar shape="square" src="/src/assets/logo.svg" />
       <span id="navbar-text"><span style="color: #b8001f;background-color: #fafafa;">慧通</span>大模型</span>
     </div>
     <div class="navbar-right">

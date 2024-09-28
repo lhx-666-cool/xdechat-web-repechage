@@ -1,15 +1,49 @@
 <template>
-    <div class="message">
-        <img src="/icon/loge.svg" height="35px" style="border-radius: 5px">
-        <div class="text">
-            <!-- <markdown-it-vue class="md-body" content="111" /> -->
-            <!-- {{ role }} -->
-            <Text :text="text" />
+    <div class="message" :class="{'message-user': role === 'user'}">
+        <img src="../assets/logo.svg" height="35px" style="border-radius: 5px" :class="{'hide': role === 'user'}" class="unselectable">
+        <img src="../assets/user.svg" height="35px" style="border-radius: 5px" :class="{'hide': role === 'assistant'}" class="unselectable">
+        <br>
+        <div class="text"   :class="{'text-user': role === 'user', 'text-bot': role === 'assistant'}" >
+            <Text :text="text"/>
             <Text text="
-```js
-console.log()
+$\frac{114514}{1919810}$
+$$\frac{114514}{1919810}$$
+```cpp
+#include <iostream>
 ```
-            " />
+```python
+print(input())
+```
+# 你好
+
+$$
+\int_{a}^{b} f(x)\,dx = -\int_{b}^{a} f(x)\,dx, \quad \text{且} \quad \left(\frac{\partial x}{\partial y}\right)^2 = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n
+$$
+
+$$
+x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}, \quad \text{对于} \quad ax^2 + bx + c = 0
+$$
+
+$$
+e^{i\pi} + 1 = 0
+$$
+
+$$
+\lim_{x \to \infty} \frac{1}{x} = 0
+$$
+
+$$
+\mathbf{A} =
+\begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}
+$$
+
+
+            "/>
 
         </div>
     </div>
@@ -32,4 +66,37 @@ const props = defineProps({
 </script>
 
 <style scoped>
+.message-user{
+    display: flex; /* 启用flexbox布局 */
+    flex-direction: column;
+    align-items: flex-end;
+}
+.hide{
+    display: none
+}
+
+.text{
+    display: inline-block;
+    margin-bottom: 30px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.text-bot{
+    background-color:rgb(235, 235, 235);
+}
+.text-user{
+    margin-top: 5px;
+    background-color: rgb(210, 249, 209);
+
+}
+.unselectable {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE 10+ 和 Edge */
+    user-select: none;         /* 标准语法 */
+    pointer-events: none;
+  }
+  
 </style>

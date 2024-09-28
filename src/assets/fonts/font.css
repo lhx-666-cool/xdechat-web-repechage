@@ -1,0 +1,10 @@
+/*
+* 这是NanCunChild于2024/09/28添加的字体选择器
+* 如果想添加别的字体，就直接加一段font-family和src
+* 我好想直接用google font啊，受不了了
+* 哼，哼，哼，哼啊啊啊~~哼啊啊啊啊啊啊！！！！
+*/
+@font-face {
+    font-family: 'NotoSansSC-Regular';
+    src: url('./Noto_Sans_SC/static/NotoSansSC-Regular.ttf');
+}
