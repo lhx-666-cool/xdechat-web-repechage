@@ -11,3 +11,8 @@ function generateRandomString(length) {
 function getUid() {
     return "114514";
 }
+
+export {
+    getUid,
+    generateRandomString
+}
