@@ -1,10 +1,16 @@
 <template>
-    <div class="message" :class="{'message-user': role === 'user'}">
-        <img src="../assets/logo.svg" height="35px" style="border-radius: 5px" :class="{'hide': role === 'user'}" class="unselectable">
-        <img src="../assets/user.svg" height="35px" style="border-radius: 5px" :class="{'hide': role === 'assistant'}" class="unselectable">
-        <br>
-        <div class="text"   :class="{'text-user': role === 'user', 'text-bot': role === 'assistant'}" >
-            <Text :text="text"/>
+    <div class="message" :class="{ 'message-user': role === 'user' }">
+        <div class="avatorContainer">
+            <img src="../assets/logo.svg" class="avator unselectable" :class="{ 'hide': role === 'user' }">
+        </div>
+
+        <div class="avatorContainer">
+            <img src="../assets/user.svg" class="avator unselectable" :class="{ 'hide': role === 'assistant' }">
+        </div>
+
+
+        <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }">
+            <Text :text="text" />
             <Text text="
 $\frac{114514}{1919810}$
 $$\frac{114514}{1919810}$$
@@ -43,7 +49,7 @@ a_{m1} & a_{m2} & \cdots & a_{mn}
 $$
 
 
-            "/>
+            " />
 
         </div>
     </div>
@@ -66,37 +72,62 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.message-user{
-    display: flex; /* 启用flexbox布局 */
+.message-user {
+    display: flex;
+    /* 启用flexbox布局 */
     flex-direction: column;
     align-items: flex-end;
 }
-.hide{
+
+.hide {
     display: none
 }
 
-.text{
+.text {
     display: inline-block;
-    margin-bottom: 30px;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    margin: 10px 10px 20px 10px;
+    padding: 20px 25px;
+    border-radius: 28px;
+    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;*/
 }
 
-.text-bot{
-    background-color:rgb(235, 235, 235);
+.text-bot {
+    background-color: rgb(235, 235, 235);
 }
-.text-user{
+
+.text-user {
     margin-top: 5px;
     background-color: rgb(210, 249, 209);
 
 }
+
 .unselectable {
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE 10+ 和 Edge */
-    user-select: none;         /* 标准语法 */
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE 10+ 和 Edge */
+    user-select: none;
+    /* 标准语法 */
     pointer-events: none;
-  }
-  
+}
+
+.avatorContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 52px;
+    height: 52px;
+    margin: 2px;
+}
+
+.avator {
+    display: flex;
+
+    width: 48px;
+    height: 48px;
+    border-radius: 5px
+}
 </style>

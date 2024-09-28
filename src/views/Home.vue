@@ -20,11 +20,8 @@
         <div class="choose-type" v-if="ac_session.type === ''">
           <chooseKind />
         </div>
-        <div class="input">
-          <div class="userinput_container"> <textarea name="userinput" id="userinput" rows="5"
-              class="userinput font_notoSansSC" placeholder="字体改了，舒服多了"></textarea></div>
-          <button class="send"><img src="../assets/send.svg" /></button>
-        </div>
+        
+        <chatInput/>
       </div>
     </div>
   </div>
@@ -36,10 +33,11 @@ import { ref, reactive } from "vue";
 import $ from 'jquery'
 import { getChatHistory } from '../js/chatHistory'
 import { Session } from '../js/session'
-import { getKinds } from "../js/api";
+// import { getKinds } from "../js/api";
 import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
+import chatInput from "../components/chatInput.vue";
 
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
 const activateId = ref("")
@@ -121,55 +119,6 @@ function choice(id, index) {
   padding: 0;
 }
 
-.userinput_container{
-  display: flex;
-  width: 100%;
-  height: auto;
-  max-height: 25dvh;
-}
-
-.userinput {
-  flex-grow: 1;
-  padding: 5px 5px 5px 20px;
-
-  resize: none;
-  width: 100%;
-  height: 42px;
-  max-height: 240px;
-  font-size: 48px;
-  border: 0px;
-  background-color: transparent;
-  font-size: larger;
-  overflow: hidden;
-}
-
-.userinput:focus {
-  outline: none;
-}
-
-.send {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border: 0;
-  background-color: #117554;
-  color: whi;
-  border-radius: 25px;
-  font-weight: bolder;
-  color: white;
-  rotate: 2;
-  transition: 0.5s;
-}
-
-.send:hover {
-  background-color: #054b33;
-  scale: 1.05;
-  transition: 0.5s;
-}
 
 .responsive-element {
   width: 90%;
@@ -196,22 +145,7 @@ function choice(id, index) {
   scrollbar-width: none;
 }
 
-.input {
-  position: absolute;
-  display: flex;
-  align-items: center;
 
-  bottom: 30px;
-  height: 64px;
-  max-height: 360px;
-  border-radius: 32px;
-  background-color: #F6F6F6;
-  width: calc(100% - 40px);
-  border: 1px gray solids;
-  /*box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;*/
-  padding: 10px;
-  display: flex
-}
 
 .sidebar-btn {
   display: flex;
