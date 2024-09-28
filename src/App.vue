@@ -7,7 +7,7 @@
 import Navbar from "./components/Navbar.vue";
 </script>
 
-<style Lang="sass">
+<style Lang="sass" scoped>
 :root {
   --primary: #ebebeb;
   --dark: #1e293b;

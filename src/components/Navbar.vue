@@ -2,7 +2,7 @@
   <div id="navbar-out">
     <div class="navbar-left">
       <el-avatar shape="square" src="/src/assets/logo.svg" />
-      <span id="navbar-text"><span style="color: #b8001f;background-color: #fafafa;">慧通</span>大模型</span>
+      <span id="navbar-text"><span style="color: #b8001f;">慧通</span>大模型</span>
     </div>
     <div class="navbar-right">
       <!-- 右侧内容 -->
@@ -18,8 +18,8 @@
 
 <style scoped>
 #navbar-out {
-  height: 40px;
-  background-color: #fafafa;
+  height: 48px;
+  background-color: #f5f5f5;
   padding: 10px;
   display: flex;
   flex-direction: row;
@@ -30,7 +30,7 @@
 .navbar-right {
   display: flex;
   align-items: center;
-  background-color: #fafafa;
+  background-color: transparent;
 }
 
 #navbar-text {
@@ -41,7 +41,7 @@
   text-align: center;
   color: #424242;
   margin-left: 20px;
-  background-color: #fafafa;
+  background-color: transparent;
 }
 .navbar-user {
   font-size: small;
