@@ -1,11 +1,10 @@
 <template>
   <div class="container">
     <aside :class="{ 'sidebar-collapsed': isCollapsed, 'sidebar': !isCollapsed }">
-      <div class="new-chat">
+      <div class="new-chat" @click="newChat">
         创建新对话
       </div>
-      
-      
+      <chatHistoryCard v-for="(item, index) in session_list" :key="item.id" :text="item.topic" :isac="activateId === item.id" @click="choice(item.id, index)"/>
     </aside>
     <aside class="sidebar-btn">
       <div class="toggleSidebar" @click="toggleSidebar">
@@ -14,6 +13,7 @@
     </aside>
     <div class="main-content">
       <div class="responsive-element">
+        <messageCard v-for="item in ac_message" :key="item.id" :text="item.content" :role="item.role"/>
         <div class="input">
           <textarea name="userinput" id="userinput" rows="5" class="userinput"></textarea>
           <button class="send">发送</button>
@@ -28,9 +28,10 @@ import { ref } from "vue";
 import $ from 'jquery'
 import { getChatHistory } from '../js/chatHistory'
 import { Session } from '../js/session'
-
+import chatHistoryCard from '../components/chatHistoryCard.vue'
+import messageCard from "../components/messageCard.vue";
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
-
+const activateId = ref("")
 function toggleSidebar() {
   isCollapsed.value = !isCollapsed.value; // 切换侧边栏状态
   if (isCollapsed.value === true) {
@@ -40,7 +41,8 @@ function toggleSidebar() {
   }
 }
 
-let session_list = []
+const session_list = ref([])
+const ac_message = ref([])
 async function fetchChatHistory() {
     try {
         const chatHistory = await getChatHistory('111');
@@ -48,19 +50,31 @@ async function fetchChatHistory() {
           console.log("获取聊天记录失败后的错误处理")
         }else {
           for (let i of chatHistory) {
-            // console.log(i)
             let record = JSON.parse(i.record)
-            // console.log(i.id, i.uid, record.lastUpdata, record.message, record.topic, record.type)
-            session_list.push(new Session(i.id, i.uid, record.lastUpdate, record.messages, record.topic, record.type));
+            session_list.value.unshift(new Session(i.id, i.uid, record.lastUpdate, record.messages, record.topic, record.type));
           }
         }
-        console.log(session_list)
+        activateId.value = session_list.value[0].id;
+        ac_message.value = session_list.value[0].message;
     } catch (error) {
         console.error('获取聊天记录失败:', error);
     }
 }
 
 fetchChatHistory();
+
+function newChat() {
+  session_list.value.unshift(new Session())
+  activateId.value = session_list.value[0].id
+  ac_message.value = session_list.value[0].message;
+}
+
+function choice(id, index) {
+  activateId.value = id;
+  ac_message.value = session_list.value[index].message;
+  // console.log(session_list.value[index].message);
+  // console.log(ac_message.value)
+}
 </script>
 
 <style scoped>
@@ -70,9 +84,11 @@ fetchChatHistory();
 }
 
 .sidebar {
-  width: 200px;
+  flex-shrink: 0;
+  width: 200px !important;
   background-color: #eeeeee;
   transition: all 0.3s;
+  overflow-y: auto;
 }
 
 .sidebar-collapsed {
@@ -120,7 +136,6 @@ fetchChatHistory();
   box-sizing: border-box; 
   margin: 0 auto;
   position: relative;
-  position: relative;
 }
 @media (min-width: 768px) { 
   .responsive-element {
@@ -145,6 +160,7 @@ fetchChatHistory();
   display: flex;
   align-items: center;
   justify-content: center; 
+  width: 0px;
 }
 .toggleSidebar{
   width: 30px;
@@ -154,8 +170,11 @@ fetchChatHistory();
   display: flex;
   align-items: center;
   justify-content: center; 
+  transform: translateX(10px);
+  z-index: 100;
 }
 .toggleSidebar-left{
+  width: 30px;
   transition: all 0.3s;
 }
 .new-chat{
@@ -165,5 +184,8 @@ fetchChatHistory();
   text-align: center;
   font-size: small;
   padding: 5px;
+}
+.new-chat:hover{
+  background-color: rgba(128, 128, 128, 0.1);
 }
 </style>

@@ -10,15 +10,21 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@traptitech/markdown-it-katex": "^3.6.0",
     "axios": "^1.7.2",
     "element-plus": "^2.7.6",
+    "highlight.js": "^11.10.0",
     "jquery": "^3.7.1",
+    "markdown-it": "^14.1.0",
+    "markdown-it-katex": "^2.0.3",
+    "markdown-it-link-attributes": "^4.0.1",
     "vue": "^3.4.29",
     "vue-demi": "^0.14.10",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
+    "less": "^4.2.0",
     "sass": "^1.79.4",
     "unplugin-auto-import": "^0.17.6",
     "unplugin-icons": "^0.19.0",

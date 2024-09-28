@@ -1,3 +1,4 @@
+import { generateRandomString, getUid } from './util';
 
 class Session{
     constructor(id, uid, lastUpdate, message, topic, type) {
@@ -5,7 +6,7 @@ class Session{
             this.id = generateRandomString(21)
             this.uid = getUid();
             this.lastUpdate = Date.now();
-            this.topic = "新聊天";
+            this.topic = "新的聊天";
             this.type = "";
         }else {
             this.id = id;
