@@ -7,4 +7,4 @@
 import Navbar from "./components/Navbar.vue";
 </script>
 
-<style></style>
+<style Lang="sass"></style>
