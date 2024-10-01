@@ -1,5 +1,5 @@
 <template>
-<div class="card":class="{'ac': isac}">
+<div class="card" :class="{'ac': isac}">
     <img src="/icon/message.svg" height="18px">
     <span class="text">
         {{ text }}

@@ -5,9 +5,9 @@
         </div>
         <div class="btns">
             <div v-for="(item, index) in kinds" :key="index">
-                <div class="choose-card">
+                <div class="choose-card no-select" @click=choose(item.key) >
                     <div class="img">
-                        <img :src="'/src/assets/'+item.key+'.svg'" height="30px">
+                        <img :src="'/src/assets/'+item.key+'.svg'" height="30px" draggable="false">
                     </div>
                     {{ item.describe }}
                 </div>
@@ -17,9 +17,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import { getKinds } from '../js/api';
-
+const emit = defineEmits(['choose-key']);
 const kinds = ref([])
 async function fetchKinds() {
   try {
@@ -27,7 +27,6 @@ async function fetchKinds() {
     if (res === "err") {
       console.log("获取类型失败的错误处理")
     } else {
-        console.log(res)
         kinds.value = res
     }
   } catch (error) {
@@ -36,7 +35,18 @@ async function fetchKinds() {
 }
 
 fetchKinds();
-console.log(kinds.value)
+
+function choose(key) {
+    const sendDataToParent = () => {
+        emit('choose-key', key);
+    };
+    sendDataToParent();
+}
+
+
+
+
+
 </script>
 
 <style scoped>
@@ -73,5 +83,12 @@ console.log(kinds.value)
     justify-content: center;
     flex-wrap: wrap;
 }
+.no-select {
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    cursor: pointer;
+  }
 
 </style>

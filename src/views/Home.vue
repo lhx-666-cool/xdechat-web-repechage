@@ -9,19 +9,22 @@
     </aside>
     <aside class="sidebar-btn">
       <div class="toggleSidebar" @click="toggleSidebar">
-        <img class="toggleSidebar-left" src="/icon/arrowleft.svg" width="70%" height="70%">
+        <img class="toggleSidebar-left" src="/icon/arrowleft.svg" width="70%" height="70%" alt="">
       </div>
     </aside>
     <div class="main-content">
       <div class="responsive-element">
-        <div class="message-list" v-if="ac_session.type !== ''">
-          <messageCard v-for="item in ac_session.message" :key="item.id" :text="item.content" :role="item.role" />
+        <div class="content">
+          <div class="message-list" v-if="ac_session.type !== ''">
+            <messageCard v-for="item in ac_session.message" :key="item.id" :text="item.content" :role="item.role" />
+          </div>
+          <div class="choose-type" v-if="ac_session.type === ''">
+            <chooseKind @choose-key="handleChoose"/>
+          </div>
         </div>
-        <div class="choose-type" v-if="ac_session.type === ''">
-          <chooseKind />
+        <div>
+          <chatInput @send-message="onSend"/>
         </div>
-        
-        <chatInput/>
       </div>
     </div>
   </div>
@@ -33,11 +36,21 @@ import { ref, reactive } from "vue";
 import $ from 'jquery'
 import { getChatHistory } from '../js/chatHistory'
 import { Session } from '../js/session'
-// import { getKinds } from "../js/api";
+import { fetchStream } from "../js/api";
 import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
+import { getUid } from "../js/util";
+
+import { onMounted } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+
+onMounted(() => {
+  store.dispatch('setInputOccupied', false);
+});
 
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
 const activateId = ref("")
@@ -54,7 +67,7 @@ const session_list = ref([])
 let ac_session = reactive(new Session())
 async function fetchChatHistory() {
   try {
-    const chatHistory = await getChatHistory('111');
+    const chatHistory = await getChatHistory(getUid());
     if (chatHistory === "err") {
       console.log("获取聊天记录失败后的错误处理")
     } else {
@@ -83,8 +96,28 @@ function choice(id, index) {
   activateId.value = id;
   ac_session = session_list.value[index];
   $('textarea')[0].value = ""
-
 }
+
+const receiveChoose = ref('');
+
+const handleChoose = (data) => {
+  receiveChoose.value = data;
+  console.log(receiveChoose.value)
+  ac_session.type = receiveChoose.value;
+  console.log(ac_session)
+  console.log(session_list)
+};
+
+const toSendMessage = ref('');
+
+const onSend = (data) => {
+  toSendMessage.value = data;
+  ac_session.message.push({
+    role: 'user',
+    content: toSendMessage.value
+  })
+  fetchStream(getUid(), ac_session.id, ac_session.message, ac_session.type);
+};
 </script>
 
 <style scoped>
@@ -103,19 +136,18 @@ function choice(id, index) {
 }
 
 .sidebar-collapsed {
-  width: 0px;
+  width: 0;
   transform: translateX(-200px);
   transition: all 0.3s;
   background-color: #eeeeee;
 }
 
 .main-content {
-  flex-grow: 1;
-  padding: 20px;
+  flex: 1;
   display: flex;
   justify-content: center;
   height: 100%;
-  width: 100%;
+  min-width: calc(100% - 200px);
   padding: 0;
 }
 
@@ -126,7 +158,9 @@ function choice(id, index) {
   padding: 20px;
   box-sizing: border-box;
   margin: 0 auto;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -136,8 +170,9 @@ function choice(id, index) {
 }
 
 .message-list {
-  height: calc(100% - 100px);
+  height: 100%;
   overflow-y: auto;
+  width: 100%;
   scrollbar-width: none;
 }
 
@@ -145,6 +180,11 @@ function choice(id, index) {
   scrollbar-width: none;
 }
 
+.content{
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+}
 
 
 .sidebar-btn {
@@ -185,9 +225,8 @@ function choice(id, index) {
 }
 
 .choose-type {
-  position: absolute;
-  top: 0px;
-  width: calc(100% - 40px);
+  top: 0;
+  width: 100%;
 }
 
 .font_notoSansSC {
