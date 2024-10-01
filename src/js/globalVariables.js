@@ -1,5 +1,5 @@
 // const backendUrl = "https://xdechat.xidian.edu.cn/formatapi"
-const backendUrl = "http://10.199.248.31:2222"
+const backendUrl = "http://liu.steesha.cn:2222"
 
 
 export {

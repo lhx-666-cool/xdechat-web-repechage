@@ -1,56 +1,14 @@
 <template>
     <div class="message" :class="{ 'message-user': role === 'user' }">
-        <div class="avatorContainer">
-            <img src="../assets/logo.svg" class="avator unselectable" :class="{ 'hide': role === 'user' }">
+        <div class="avatorContainer" :class="{ 'hide': role === 'user' }">
+            <img src="../assets/logo.svg" class="avator unselectable">
         </div>
 
-        <div class="avatorContainer">
-            <img src="../assets/user.svg" class="avator unselectable" :class="{ 'hide': role === 'assistant' }">
+        <div class="avatorContainer" :class="{ 'hide': role === 'assistant' }">
+            <img src="../assets/user.svg" class="avator unselectable">
         </div>
-
-
         <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }">
             <Text :text="text" />
-            <Text text="
-$\frac{114514}{1919810}$
-$$\frac{114514}{1919810}$$
-```cpp
-#include <iostream>
-```
-```python
-print(input())
-```
-# 你好
-
-$$
-\int_{a}^{b} f(x)\,dx = -\int_{b}^{a} f(x)\,dx, \quad \text{且} \quad \left(\frac{\partial x}{\partial y}\right)^2 = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n
-$$
-
-$$
-x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}, \quad \text{对于} \quad ax^2 + bx + c = 0
-$$
-
-$$
-e^{i\pi} + 1 = 0
-$$
-
-$$
-\lim_{x \to \infty} \frac{1}{x} = 0
-$$
-
-$$
-\mathbf{A} =
-\begin{pmatrix}
-a_{11} & a_{12} & \cdots & a_{1n} \\
-a_{21} & a_{22} & \cdots & a_{2n} \\
-\vdots & \vdots & \ddots & \vdots \\
-a_{m1} & a_{m2} & \cdots & a_{mn}
-\end{pmatrix}
-$$
-
-
-            " />
-
         </div>
     </div>
 </template>
@@ -80,7 +38,7 @@ const props = defineProps({
 }
 
 .hide {
-    display: none
+    display: none !important;
 }
 
 .text {
@@ -88,7 +46,8 @@ const props = defineProps({
     margin: 10px 10px 20px 10px;
     padding: 20px 25px;
     border-radius: 28px;
-    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;*/
+    max-width: calc(100% - 60px);
+    overflow: auto;
 }
 
 .text-bot {
@@ -130,4 +89,8 @@ const props = defineProps({
     height: 48px;
     border-radius: 5px
 }
+.message{
+  width: 100%;
+}
+
 </style>

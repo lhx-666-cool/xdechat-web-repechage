@@ -1,33 +1,63 @@
 <template>
   <div class="chatInputComponent">
-    <div class="chatInputContainer"> <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }"
-        ref="myTextarea" @input="onInput" placeholder="字体改了，舒服多了" rows="1"></textarea></div>
-
-    <button class="send"><img src="../assets/send.svg" /></button>
+    <div class="chatInputContainer"> 
+      <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }"
+        ref="myTextarea" @input="onInput" @keydown="handleKeydown" placeholder="字体改了，舒服多了" rows="1"></textarea>
+    </div>
+    <button class="send" @click="onSend" :disabled="isInputOccupied"><img src="../assets/send.svg"  alt="发送按钮"/></button>
   </div>
 </template>
 
-<script>
-import { ref, reactive } from "vue";
-export default {
-  data() {
-    return {
-      textareaHeight: 'auto'
-    }
-  },
-  methods: {
-    onInput() {
-      console.log(this.textareaHeight);
-      this.textareaHeight = 'auto';
-      this.textareaHeight = this.$refs.myTextarea.scrollHeight - 8 + 'px'
-    }
+<script setup>
+import { defineEmits, ref, nextTick } from 'vue'
+import {scrollToBottom, scrollToBottomWithAnimation} from "../js/util.js";
+import $ from 'jquery'
+import { useStore } from 'vuex';
+const store = useStore();
+import { computed } from 'vue';
+const isInputOccupied = computed(() => store.state.isInputOccupied);
+
+const myTextarea = ref(null)
+const textareaHeight = ref("auto")
+function onInput() {
+  textareaHeight.value = 'auto';
+  nextTick(() => {
+    const scrollHeight = myTextarea.value.scrollHeight;
+    textareaHeight.value = `${scrollHeight - 16}px`;
+  });
+}
+const emit = defineEmits(['send-message']);
+function onSend() {
+  if (isInputOccupied.value) {
+    return
+  }
+  const input =  $('.chatInput')
+  if (input.val() === "") {
+    return;
+  }
+  emit('send-message', input.val());
+  input[0].value = "";
+  store.dispatch('setInputOccupied', true);
+  setTimeout(() => {
+    scrollToBottomWithAnimation('message-list')
+  }, 0)
+  onInput();
+}
+
+function handleKeydown() {
+  if (event.shiftKey && event.key === 'Enter') {
+    $('.chatInput')[0].value += '\n';
+  }else if (event.key === 'Enter') {
+    onSend();
+    event.preventDefault(); // 阻止默认行为（例如换行）
   }
 }
+
 </script>
 
 <style Lang="sass" scoped>
 .chatInputComponent {
-  position: absolute;
+  //position: absolute;
   display: flex;
   align-items: center;
 
@@ -36,7 +66,7 @@ export default {
   max-height: 180px;
   border-radius: 32px;
   background-color: #F6F6F6;
-  width: calc(100% - 40px);
+  width: calc(100%-20px);
   border: 1px gray solids;
   padding: 10px;
   display: flex
@@ -62,13 +92,21 @@ export default {
   font-size: 48px;
   border: 0px;
   background-color: transparent;
-  overflow: hidden;
+  overflow: auto;
 
   font-family: 'NotoSansSC-Regular';
   font-size: 18px;
   color: #141414;
-
+  scrollbar-width: none;
   outline: none;
+
+}
+.chatInput::-webkit-scrollbar {
+  scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar {
+  width: 1em;
 }
 
 .send {
@@ -93,5 +131,8 @@ export default {
   background-color: #054b33;
   scale: 1.05;
   transition: 0.5s;
+}
+.send:disabled{
+  cursor: not-allowed;
 }
 </style>
