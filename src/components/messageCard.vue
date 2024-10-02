@@ -2,13 +2,29 @@
     <div class="message" :class="{ 'message-user': role === 'user' }">
         <div class="avatorContainer" :class="{ 'hide': role === 'user' }">
             <img src="../assets/logo.svg" class="avator unselectable">
+
         </div>
 
         <div class="avatorContainer" :class="{ 'hide': role === 'assistant' }">
             <img src="../assets/user.svg" class="avator unselectable">
+
         </div>
         <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }">
-            <Text :text="text" />
+          <Text :text="text" />
+          <div class="icons" v-if="role==='assistant'">
+            <div class="copy actions" @click="copyToClip(text.replace(regex, ''));toast('复制成功')">
+              <img src="../assets/copy.svg" class="avator unselectable icon">
+            </div>
+            <div class="like actions">
+              <img src="../assets/like.svg" class="avator unselectable icon">
+            </div>
+            <div class="copy actions">
+              <img src="../assets/dislike.svg" class="avator unselectable icon">
+            </div>
+            <div class="copy actions">
+              <img src="../assets/feedback.svg" class="avator unselectable icon">
+            </div>
+          </div>
         </div>
     </div>
 </template>
@@ -16,7 +32,18 @@
 <script setup>
 import { defineProps } from 'vue';
 import Text from './Text.vue';
+import { copyToClip } from "../js/copy.ts";
 //数组的接收方法
+const toast = (message) => {
+  ElMessage({
+    message: message,
+    type: 'success',
+    plain: true,
+    duration: 1000
+  })
+}
+const regex = /\n\n----------\n##### 当前对话次数: \d+\/\d+，对话次数过多可能会导致模型回复不准确\n$/g;
+
 const props = defineProps({
     text: {
         type: String,
@@ -50,6 +77,10 @@ const props = defineProps({
     overflow: auto;
 }
 
+div {
+    font-family: 'NotoSansSC-Regular';
+}
+
 .text-bot {
     background-color: rgb(235, 235, 235);
 }
@@ -74,23 +105,55 @@ const props = defineProps({
 
 .avatorContainer {
     display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 52px;
-    height: 52px;
+    justify-content: left;
+    align-items: flex-end;
+    width: auto;
+    height: 42px;
     margin: 2px;
 }
 
 .avator {
     display: flex;
 
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
     border-radius: 5px
 }
 .message{
   width: 100%;
 }
+.icons{
+  display: flex;
+  flex-direction: row;
+  margin-top: 15px;
+  margin-bottom: -10px;
 
+}
+.icon{
+  height: 15px;
+  width: 15px;
+}
+.actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px #aeaeae solid;
+  border-radius: 30px;
+  padding: 2px 5px;
+  background-color: rgb(230, 230, 230);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  margin-right: 10px;
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE 10+ 和 Edge */
+  user-select: none;
+  /* 标准语法 */
+}
+.actions:hover{
+  transform: scale(1.05);
+}
 </style>

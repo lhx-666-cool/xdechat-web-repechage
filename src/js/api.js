@@ -18,14 +18,14 @@ async function getKinds() {
     }
 }
 
-async function fetchStream(uid, id, data, type) {
+async function fetchStream(uid, session) {
     const controller = new AbortController();
     const payload = {
-        messages: data,
+        messages: session.messages.slice(0, session.messages.length - 1),
         uid: uid,
         stream: true,
-        type: type,
-        record_id: id
+        type: session.type,
+        record_id: session.id
     }
     let cnt = 0;
     const url = `${backendUrl}/v1/chat/completions`;
@@ -36,19 +36,22 @@ async function fetchStream(uid, id, data, type) {
         onopen(response) {
             // 连接打开时的逻辑
             if (response.status !== 200) {
+                controller.abort()
                 const err = response.json();
                 err.then(res => res).then(res => {
                     console.log(res)
-                    controller.abort()
-                    data.push({
-                        role: 'assistant',
-                        content: '```json\n' + JSON.stringify(res, null, 2) + '\n```',
-                    });
+                    session.messages[session.messages.length - 1].content = '```json\n' + JSON.stringify(res, null, 2) + '\n```'
                     setTimeout(() => {
                         scrollToBottom("message-list")
                     }, 0)
-                    store.dispatch('setInputOccupied', false);
-                }).catch(err => console.log(err));
+                    messageEnd(uid, session)
+                }).catch(err => {
+                    session.messages[session.messages.length - 1].content = '```json\n' + JSON.stringify({error: response.status}, null, 2) + '\n```'
+                    setTimeout(() => {
+                        scrollToBottom("message-list")
+                    }, 0)
+                    messageEnd(uid, session)
+                });
 
             }
         },
@@ -56,15 +59,12 @@ async function fetchStream(uid, id, data, type) {
             cnt ++;
             let receive = JSON.parse(event.data);
             if (cnt === 1) {
-                data.push({
-                    role: 'assistant',
-                    content: receive.choices[0].delta.content,
-                });
+                session.messages[session.messages.length - 1].content = receive.choices[0].delta.content;
                 setTimeout(() => {
                     scrollToBottomWithAnimation("message-list")
                 }, 0)
             }else {
-                data[data.length - 1].content += receive.choices[0].delta.content;
+                session.messages[session.messages.length - 1].content += receive.choices[0].delta.content;
                 setTimeout(() => {
                     scrollToBottom("message-list")
                 }, 0)
@@ -72,35 +72,46 @@ async function fetchStream(uid, id, data, type) {
         },
         onclose() {
             console.log('close');
-            store.dispatch('setInputOccupied', false);
+            messageEnd(uid, session)
         },
     })
-
-    // try{
-    //     const response = await fetch(url, {
-    //         method: "POST",
-    //         body: JSON.stringify(payload),
-    //     });
-    //     if (!response.ok) {
-    //         // console.log(response.json())
-    //         const err = await response.json();
-
-    //         return;
-    //     }
-    //
-    //     const reader = response.body.getReader();
-    //     const decoder = new TextDecoder();
-    //     let cnt = 0;
-    //     while (true) {
-
-    //     }
-    // }catch(e) {
-    //     console.error(e);
-    // }
 }
 
+function messageEnd(uid, session) {
+    store.dispatch('setInputOccupied', false);
+    session.topic = session.messages[1].content;
+    const now = new Date();
+    fetch(backendUrl + '/add-record', {
+        method: "POST",
+        body: JSON.stringify({
+            id: session.id,
+            uid: uid,
+            datetime: now.toISOString(),
+            record: JSON.stringify(session)
+        })
+    })
+}
+
+function deleteMessage(uid, id) {
+    return new Promise((resolve, reject) => {
+        fetch(backendUrl + `/delete-record?id=${id}&uid=${uid}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // 假设返回的是 JSON 数据
+            })
+            .then(data => {
+                resolve(data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
 
 export {
     getKinds,
-    fetchStream
+    fetchStream,
+    deleteMessage
 }

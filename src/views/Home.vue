@@ -4,8 +4,12 @@
       <div class="new-chat" @click="newChat">
         创建新对话
       </div>
-      <chatHistoryCard v-for="(item, index) in session_list" :key="item.id" :text="item.topic"
-        :isac="activateId === item.id" @click="choice(item.id, index)" />
+<!--      正确代码-->
+      <chatHistoryCard v-for="(item, index) in session_list" :key="index" :text="item.topic"
+        :isac="activateId === item.id" :idx="index" @click="choice(item.id, index)" @delete-message="handleDeleteMessage"/>
+<!--          会触发bug的代码-->
+<!--      <chatHistoryCard v-for="(item, index) in session_list" :key="item.id" :text="item.topic"-->
+<!--                       :isac="activateId === item.id" :idx="index" @click="choice(item.id, index)" @delete-message="handleDeleteMessage"/>-->
     </aside>
     <aside class="sidebar-btn">
       <div class="toggleSidebar" @click="toggleSidebar">
@@ -16,14 +20,14 @@
       <div class="responsive-element">
         <div class="content">
           <div class="message-list" v-if="ac_session.type !== ''">
-            <messageCard v-for="item in ac_session.message" :key="item.id" :text="item.content" :role="item.role" />
+            <messageCard v-for="item in ac_session.messages" :key="item.id" :text="item.content" :role="item.role" />
           </div>
           <div class="choose-type" v-if="ac_session.type === ''">
             <chooseKind @choose-key="handleChoose"/>
           </div>
         </div>
         <div>
-          <chatInput @send-message="onSend"/>
+          <chatInput @send-message="onSend" :session="ac_session"/>
         </div>
       </div>
     </div>
@@ -31,17 +35,16 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-
+import { ref, reactive, watch } from "vue";
 import $ from 'jquery'
 import { getChatHistory } from '../js/chatHistory'
 import { Session } from '../js/session'
-import { fetchStream } from "../js/api";
+import { fetchStream, deleteMessage } from "../js/api";
 import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
-import { getUid } from "../js/util";
+import {getUid, scrollToBottomWithAnimation } from "../js/util";
 
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
@@ -70,6 +73,8 @@ async function fetchChatHistory() {
     const chatHistory = await getChatHistory(getUid());
     if (chatHistory === "err") {
       console.log("获取聊天记录失败后的错误处理")
+    } else if (chatHistory.length === 0) {
+      session_list.value.push(new Session());
     } else {
       for (let i of chatHistory) {
         let record = JSON.parse(i.record)
@@ -78,13 +83,12 @@ async function fetchChatHistory() {
     }
     activateId.value = session_list.value[0].id;
     ac_session = session_list.value[0];
-
   } catch (error) {
     console.error('获取聊天记录失败:', error);
   }
 }
-fetchChatHistory();
 
+fetchChatHistory();
 
 function newChat() {
   session_list.value.unshift(new Session())
@@ -95,7 +99,6 @@ function newChat() {
 function choice(id, index) {
   activateId.value = id;
   ac_session = session_list.value[index];
-  $('textarea')[0].value = ""
 }
 
 const receiveChoose = ref('');
@@ -104,20 +107,59 @@ const handleChoose = (data) => {
   receiveChoose.value = data;
   console.log(receiveChoose.value)
   ac_session.type = receiveChoose.value;
-  console.log(ac_session)
-  console.log(session_list)
 };
 
 const toSendMessage = ref('');
 
 const onSend = (data) => {
   toSendMessage.value = data;
-  ac_session.message.push({
+  ac_session.messages.push({
     role: 'user',
     content: toSendMessage.value
   })
-  fetchStream(getUid(), ac_session.id, ac_session.message, ac_session.type);
+  ac_session.messages.push({
+    role: 'assistant',
+    content: '思考中...',
+  })
+  setTimeout(() => {
+    scrollToBottomWithAnimation("message-list")
+  }, 0)
+  fetchStream(getUid(), ac_session);
 };
+
+function min(a, b) {
+  return a<b?a:b;
+}
+
+const handleDeleteMessage = (idx) => {
+  session_list.value.splice(idx, 1);
+  if (session_list.value.length === 0) {
+    session_list.value.push(new Session());
+  }
+  //错误代码
+  choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))
+  //正确代码
+  // setTimeout(() => {
+  //     choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1));
+  // }, 0)
+  // 莫名其妙的bug，烦死了，不要把乱七八糟的东西都设置成v-for的key
+  deleteMessage(getUid(), session_list.value[min(idx, session_list.value.length - 1)].id)
+      .then(res => {
+        const toast = () => {
+          ElMessage({
+            message: '删除成功',
+            type: 'success',
+            plain: true,
+            duration: 1000
+          })
+        }
+        toast()
+      })
+      .catch(e => {
+        console.log(e)
+      })
+}
+
 </script>
 
 <style scoped>
@@ -174,6 +216,7 @@ const onSend = (data) => {
   overflow-y: auto;
   width: 100%;
   scrollbar-width: none;
+  overflow-x: hidden;
 }
 
 .message-list::-webkit-scrollbar {
@@ -184,14 +227,15 @@ const onSend = (data) => {
   flex: 1;
   overflow-y: auto;
   width: 100%;
+  padding-bottom: 20px;
+  overflow-x: hidden;
 }
-
 
 .sidebar-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 0px;
+  width: 0;
 }
 
 .toggleSidebar {
