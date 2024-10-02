@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <router-view :key="$route.fullPath" />
+  <router-view :key="$route.fullPath"/>
 </template>
 
 <script setup>
@@ -22,6 +22,8 @@ import Navbar from "./components/Navbar.vue";
 
 body {
   background: var(--light);
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 button {

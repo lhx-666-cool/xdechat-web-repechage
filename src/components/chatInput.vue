@@ -1,37 +1,47 @@
 <template>
   <div class="chatInputComponent">
-    <div class="chatInputContainer"> 
-      <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }"
-        ref="myTextarea" @input="onInput" @keydown="handleKeydown" placeholder="字体改了，舒服多了" rows="1"></textarea>
+    <div class="chatInputContainer">
+      <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
+        @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : '问点什么'"
+        rows="1"></textarea>
     </div>
-    <button class="send" @click="onSend" :disabled="isInputOccupied"><img src="../assets/send.svg"  alt="发送按钮"/></button>
+    <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''"><img
+        src="../assets/send.svg" alt="发送按钮" /></button>
   </div>
 </template>
 
 <script setup>
 import { defineEmits, ref, nextTick } from 'vue'
-import {scrollToBottom, scrollToBottomWithAnimation} from "../js/util.js";
-import $ from 'jquery'
+import { scrollToBottom, scrollToBottomWithAnimation } from "../js/util.js";
+import $, { data } from 'jquery'
 import { useStore } from 'vuex';
 const store = useStore();
 import { computed } from 'vue';
 const isInputOccupied = computed(() => store.state.isInputOccupied);
+import { defineProps } from 'vue';
+import { Session } from "../js/session.js";
 
-const myTextarea = ref(null)
+
+const props = defineProps({
+  session: {
+    type: Session,
+    required: true
+  }
+})
+
+const chatInputArea = ref(null)
 const textareaHeight = ref("auto")
 function onInput() {
   textareaHeight.value = 'auto';
   nextTick(() => {
-    const scrollHeight = myTextarea.value.scrollHeight;
+    const scrollHeight = chatInputArea.value.scrollHeight;
     textareaHeight.value = `${scrollHeight - 16}px`;
   });
 }
 const emit = defineEmits(['send-message']);
 function onSend() {
-  if (isInputOccupied.value) {
-    return
-  }
-  const input =  $('.chatInput')
+  if (isInputOccupied.value || props.session.type === '') return;
+  const input = $('.chatInput')
   if (input.val() === "") {
     return;
   }
@@ -44,10 +54,13 @@ function onSend() {
   onInput();
 }
 
-function handleKeydown() {
+function handleKeydown(event) {
   if (event.shiftKey && event.key === 'Enter') {
+    //这里需要记得阻止，不然会有两次换行。同时让onInput处理，因为本质上用户输入被截断了
     $('.chatInput')[0].value += '\n';
-  }else if (event.key === 'Enter') {
+    onInput();
+    event.preventDefault();
+  } else if (event.key === 'Enter') {
     onSend();
     event.preventDefault(); // 阻止默认行为（例如换行）
   }
@@ -57,7 +70,6 @@ function handleKeydown() {
 
 <style Lang="sass" scoped>
 .chatInputComponent {
-  //position: absolute;
   display: flex;
   align-items: center;
 
@@ -82,10 +94,10 @@ function handleKeydown() {
 .chatInput {
   display: flex;
   flex-grow: 1;
-  padding: 8px 5px 8px 20px;
+  padding: 8px 10px 8px 20px;
 
   resize: none;
-  width: 100%;
+  width: 95%;
   min-height: 32px;
   height: 32px;
   max-height: 140px;
@@ -99,8 +111,8 @@ function handleKeydown() {
   color: #141414;
   scrollbar-width: none;
   outline: none;
-
 }
+
 .chatInput::-webkit-scrollbar {
   scrollbar-width: none;
 }
@@ -127,12 +139,14 @@ textarea::-webkit-scrollbar {
   transition: 0.5s;
 }
 
+.send:disabled {
+  background-color: #666666;
+  cursor: not-allowed;
+}
+
 .send:hover {
   background-color: #054b33;
   scale: 1.05;
   transition: 0.5s;
-}
-.send:disabled{
-  cursor: not-allowed;
 }
 </style>

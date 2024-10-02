@@ -1,15 +1,22 @@
 <template>
 <div class="card" :class="{'ac': isac}">
-    <img src="/icon/message.svg" height="18px">
+    <img src="../assets/message.svg" height="18px">
     <span class="text">
         {{ text }}
     </span>
+   <img src="../assets/delete.svg" height="18px" :class="{'hide': !isac}" @click="sendMessage"/>
 </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
-//数组的接收方法
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['delete-message']);
+const sendMessage = () => {
+  emit('delete-message', props.idx);
+};
+
 const props = defineProps({
     text: {
         type: String,
@@ -18,6 +25,10 @@ const props = defineProps({
     isac: {
         type: Boolean,
         required: true,
+    },
+    idx: {
+      type: Number,
+      required: true
     }
 })
 
@@ -29,7 +40,7 @@ const props = defineProps({
     border: 1px rgba(128, 128, 128, 0.3) solid;
     margin: 10px;
     text-align: left;
-    font-size: small;
+    font-size: 16px;
     padding: 10px;
 
     display: flex;
@@ -42,6 +53,7 @@ const props = defineProps({
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis; 
+    font-family: 'NotoSansSC-Regular';
 }
 .ac{
     background-color: rgba(128, 128, 128, 0.3) !important;
@@ -49,5 +61,11 @@ const props = defineProps({
 }
 .card:hover{
     background-color: rgba(128, 128, 128, 0.1);
+}
+.hide{
+  display: none;
+}
+*{
+  cursor: pointer;
 }
 </style>
