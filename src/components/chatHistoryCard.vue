@@ -4,7 +4,7 @@
     <span class="text">
         {{ text }}
     </span>
-   <img src="../assets/delete.svg" height="18px" :class="{'hide': !isac}" @click="sendMessage"/>
+   <img src="../assets/delete.svg" height="18px" :class="{'hide': !isac}" @click="deleteMessage"/>
 </div>
 </template>
 
@@ -13,7 +13,7 @@ import { defineProps } from 'vue';
 import { defineEmits } from 'vue';
 
 const emit = defineEmits(['delete-message']);
-const sendMessage = () => {
+const deleteMessage = () => {
   emit('delete-message', props.idx);
 };
 

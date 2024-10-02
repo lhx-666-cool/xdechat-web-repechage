@@ -8,8 +8,19 @@
                     </div>
                 </div>
             </div>
-            <div class="chatLogArea"></div>
-            <div class="extraSettingsArea"></div>
+
+            <div class="chatLogArea" id="chatLogArea">
+                <div class="chatLogBar">
+                    <div class="chatLogItemImgContainer">
+                        <img class="chatLogItemImg" src="../assets/chatLogSidebar/message.svg" />
+                    </div>
+                    <div class="chatLogItemText">OHHHHHHHH</div>
+                </div>
+            </div>
+
+            <div class="extraSettingsArea">
+
+            </div>
         </div>
     </div>
 </template>
@@ -54,6 +65,7 @@
 
 .chatLogArea {
     display: flex;
+    flex-direction: column;
     width: 220px;
     height: 640px;
     margin: 2px;
@@ -86,7 +98,7 @@
     transition: 0.6s;
 }
 
-.collapseArrowBar:hover{
+.collapseArrowBar:hover {
     background-color: #e0e0e0;
     transition: 0.6s;
 }
@@ -104,5 +116,35 @@
     display: flex;
     height: 32px;
     width: 32px;
+}
+
+
+
+
+.chatLogBar {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 215px;
+    height: 46px;
+    border: #2c2c2c solid 1px;
+    margin: 2px;
+}
+
+.chatLogItemImgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+}
+
+.chatLogItemImg {
+    width: 28px;
+    height: 28px;
+}
+
+.chatLogItemText {
+    font-size: 18px;
 }
 </style>

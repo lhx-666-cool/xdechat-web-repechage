@@ -35,7 +35,7 @@ mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor
 const wrapClass = computed(() => {
   return [
     'text-wrap',
-    'min-w-[20px]','max-w-[810px]',
+    'min-w-[20px]', 'max-w-[810px]',
     'rounded-md',
     'px-3 py-2',
   ]
@@ -43,15 +43,15 @@ const wrapClass = computed(() => {
 
 const text = computed(() => {
   let value = props.text ?? ''
-    value = value.replace(/\\\( *(.*?) *\\\)/g, '$$$1$$');
-    //value = value.replace(/\\\((.*?)\\\)/g, '$$$1$$');
-    value = value.replace(/\\\[ *(.*?) *\\\]/g, '$$$$$1$$$$');
-    //
-    value= value.replace('\\[',"$$$$")
-    value= value.replace('\\]',"$$$$")   
-    //mlog('replace', value)
-    return mdi.render(value)
-  
+  value = value.replace(/\\\( *(.*?) *\\\)/g, '$$$1$$');
+  //value = value.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+  value = value.replace(/\\\[ *(.*?) *\\\]/g, '$$$$$1$$$$');
+  //
+  value = value.replace('\\[', "$$$$")
+  value = value.replace('\\]', "$$$$")
+  //mlog('replace', value)
+  return mdi.render(value)
+
   return value
 })
 
@@ -82,7 +82,7 @@ function removeCopyEvents() {
   if (textRef.value) {
     const copyBtn = textRef.value.querySelectorAll('.code-block-header__copy')
     copyBtn.forEach((btn) => {
-      btn.removeEventListener('click', () => {})
+      btn.removeEventListener('click', () => { })
     })
   }
 }
@@ -105,10 +105,10 @@ onUnmounted(() => {
 
     <div ref="textRef" class="leading-relaxed break-words">
 
-      <div class="markdown-body "  style="--color-fg-default:#24292f"  v-html="text"/>
+      <div class="markdown-body " style="--color-fg-default:#24292f" v-html="text" />
 
     </div>
-    </div>
+  </div>
 </template>
 
 <style lang="less">
