@@ -1,12 +1,16 @@
 <template>
   <div class="chatInputComponent">
+    <div>
+      <button class="upload"><img
+        src="../assets/upload.svg" alt="上传" /></button>
+    </div>
     <div class="chatInputContainer">
       <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
         @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : '问点什么'"
         rows="1"></textarea>
     </div>
     <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''"><img
-        src="../assets/send.svg" alt="发送按钮" /></button>
+        src="../assets/send.svg" alt="发送" /></button>
   </div>
 </template>
 
@@ -148,5 +152,25 @@ textarea::-webkit-scrollbar {
   background-color: #054b33;
   scale: 1.05;
   transition: 0.5s;
+}
+.upload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background-color: transparent;
+  border-radius: 25px;
+  font-weight: bolder;
+  color: white;
+  rotate: 2;
+  transition: 0.5s;
+}
+.upload:hover{
+  background-color: #dfdfdf;
+  cursor: pointer;
 }
 </style>

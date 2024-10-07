@@ -110,8 +110,35 @@ function deleteMessage(uid, id) {
     });
 }
 
+function addFeedback(uid, record, type, content) {
+    return new Promise((resolve, reject) => {
+        fetch(backendUrl + `/add`, {
+            method: "POST",
+            body: JSON.stringify({
+                uid,
+                record,
+                type,
+                content
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // 假设返回的是 JSON 数据
+            })
+            .then(data => {
+                resolve(data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
 export {
     getKinds,
     fetchStream,
-    deleteMessage
+    deleteMessage,
+    addFeedback
 }
