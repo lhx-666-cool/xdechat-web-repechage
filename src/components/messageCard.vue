@@ -9,37 +9,50 @@
             <img src="../assets/user.svg" class="avator unselectable">
 
         </div>
-        <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }" @mouseover="showExtra[index] = true" @mouseout="showExtra[index] = false">
+        <!--        <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }" @mouseover="showExtra[idx] = true" @mouseout="temp(); console.log('移除')">-->
+        <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }">
             <Text :text="text" />
-            <div class="icons" v-if="role === 'assistant' && showExtra[index]">
+            <!--            <div class="icons" v-if="role === 'assistant' && showExtra[idx]" @mouseover="showExtra[idx] = true; toast('111')">-->
+            <b-button-group class="icons" v-if="role === 'assistant'">
+
                 <b-button class="copy actions" @click="copyToClip(text.replace(regex, '')); toast('复制成功')"
                     v-b-tooltip.hover.bottom title="复制">
                     <img src="../assets/copy.svg" class="avator unselectable icon" title="复制">
                 </b-button>
 
-                <b-button class="like actions" v-b-tooltip.hover.bottom title="好答">
+                <b-button class="like actions" v-b-tooltip.hover.bottom title="好答" @click="like()">
                     <img src="../assets/like.svg" class="avator unselectable icon">
                 </b-button>
 
-                <b-button class="copy actions" v-b-tooltip.hover.bottom title="答得跟粑粑似的">
+                <b-button class="copy actions" v-b-tooltip.hover.bottom title="答得跟粑粑似的" @click="dislike">
                     <img src="../assets/dislike.svg" class="avator unselectable icon">
                 </b-button>
 
-                <b-button class="copy actions" v-b-tooltip.hover.bottom title="反馈">
+                <b-button class="copy actions" v-b-tooltip.hover.bottom title="反馈" @click="feedbackDialog = true">
                     <img src="../assets/feedback.svg" class="avator unselectable icon">
                 </b-button>
-            </div>
+            </b-button-group>
         </div>
     </div>
+    <el-dialog v-model="feedbackDialog" title="反馈" width="500" align-center>
+        <el-input v-model="feedbackMessage" maxlength="100" :rows="5" style="" placeholder="请输入反馈信息" show-word-limit
+            type="textarea" resize="none" />
+        <br>
+        <br>
+        <el-button type="primary" @click="feedback">提交反馈</el-button>
+    </el-dialog>
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import Text from './Text.vue';
 import { copyToClip } from "../js/copy.ts";
+import { addFeedback } from "../js/api.js";
+import { getUid } from "../js/util.js";
 
-let showExtra = ref([]);
-//数组的接收方法
+
+const feedbackDialog = ref(false)
+const feedbackMessage = ref("")
 const toast = (message) => {
     ElMessage({
         message: message,
@@ -58,16 +71,45 @@ const props = defineProps({
     role: {
         type: String,
         required: true
+    },
+    idx: {
+        type: Number,
+        required: true
+    },
+    messages: {
+        type: Array,
+        required: true
     }
 })
 
+function like() {
+    addFeedback(getUid(), JSON.stringify(props.messages), "like", '')
+        .then((res) => { console.log(res); toast("点赞成功") })
+        .catch((err) => { console.log(err) })
+}
 
+function dislike() {
+    addFeedback(getUid(), JSON.stringify(props.messages), "dislike", '')
+        .then((res) => { console.log(res); toast("反馈成功") })
+        .catch((err) => { console.log(err) })
+}
+
+function feedback() {
+    if (feedbackMessage.value === '') {
+        toast("反馈内容不能为空")
+        return;
+    }
+    addFeedback(getUid(), JSON.stringify(props.messages), "feedback", feedbackMessage.value)
+        .then((res) => { console.log(res); toast("反馈成功") })
+        .catch((err) => { console.log(err) })
+    feedbackMessage.value = ""
+    feedbackDialog.value = false
+}
 </script>
 
 <style scoped>
 .message-user {
     display: flex;
-    /* 启用flexbox布局 */
     flex-direction: column;
     align-items: flex-end;
 }
@@ -83,7 +125,7 @@ const props = defineProps({
     border-radius: 28px;
     max-width: calc(100% - 60px);
     overflow: auto;
-    
+
 }
 
 div {

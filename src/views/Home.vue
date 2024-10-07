@@ -20,7 +20,7 @@
       <div class="responsive-element">
         <div class="content">
           <div class="message-list" v-if="ac_session.type !== ''">
-            <messageCard v-for="item in ac_session.messages" :key="item.id" :text="item.content" :role="item.role" />
+            <messageCard v-for="(item, index) in ac_session.messages" :key="item.id" :text="item.content" :role="item.role" :idx="index" :messages="ac_session.messages"/>
           </div>
           <div class="choose-type" v-if="ac_session.type === ''">
             <chooseKind @choose-key="handleChoose"/>

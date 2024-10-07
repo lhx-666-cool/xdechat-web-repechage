@@ -1,20 +1,21 @@
 <template>
-    <div class="chatLogSideBarContainer">
+    <aside class="chatLogSideBarContainer">
         <div class="chatLogSideBar">
             <div class="collapseArrowArea">
                 <div class="collapseArrowBar">
                     <div class="collapseArrowContainer">
-                        <img class="collapseArrowImg" alt="Collapse" src="../assets/chatLogSidebar/arrow_right.svg" />
+                        <img class="collapseArrowImg" alt="Collapse"
+                            src="../assets/chatLogSidebar/double_arrow_lm.svg" />
                     </div>
                 </div>
             </div>
 
             <div class="chatLogArea" id="chatLogArea">
-                <div class="chatLogBar">
+                <div class="chatLogBar" v-for="(log, index) in chatLogs" :key="index">
                     <div class="chatLogItemImgContainer">
-                        <img class="chatLogItemImg" src="../assets/chatLogSidebar/message.svg" />
+                        <img class="chatLogItemImg" src="../assets/chatLogSidebar/chat_bubble_lm.svg" />
                     </div>
-                    <div class="chatLogItemText">OHHHHHHHH</div>
+                    <div class="chatLogItemText">{{ log.chatLogTitle }}</div>
                 </div>
             </div>
 
@@ -22,11 +23,19 @@
 
             </div>
         </div>
-    </div>
+    </aside>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 
+// 定义一个聊天记录数组
+const chatLogs = ref([
+    { chatLogTitle: 'New' },
+    { chatLogTitle: 'Looooooooooooooooooooooooooooooooog' },
+    { chatLogTitle: 'Chat 3' },
+    { chatLogTitle: 'OHHHHHHHH' }
+]);
 </script>
 
 <style scoped>
@@ -37,27 +46,25 @@
     position: absolute;
     left: 5px;
     top: 5px;
-    width: 240px;
-    height: 890px;
-    background-color: #c5c5c5;
+    width: 280px;
+    height: 100%;
+    background-color: #e0e0e0;
 }
 
 .chatLogSideBar {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 230px;
+    width: 250px;
     height: 880px;
     margin: 2px;
-    border: #2c2c2c solid 1px;
-    /* Test Only*/
 }
 
 .collapseArrowArea {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 230px;
+    width: 250px;
     height: auto;
     margin: 2px;
 
@@ -66,22 +73,18 @@
 .chatLogArea {
     display: flex;
     flex-direction: column;
-    width: 220px;
+    width: 240px;
     height: 640px;
     margin: 2px;
-    border: #2c2c2c solid 1px;
-    /* Test Only*/
 }
 
 .extraSettingsArea {
     display: flex;
     position: absolute;
     bottom: 10px;
-    width: 220px;
+    width: 240px;
     height: 150px;
     margin: 2px;
-    border: #2c2c2c solid 1px;
-    /* Test Only*/
 }
 
 
@@ -92,7 +95,7 @@
     justify-content: right;
     align-items: center;
     height: 46px;
-    width: 215px;
+    width: 235px;
     margin: 2px;
     border-radius: 24px;
     transition: 0.6s;
@@ -125,10 +128,16 @@
     display: flex;
     justify-content: left;
     align-items: center;
-    width: 215px;
+    width: 235px;
     height: 46px;
-    border: #2c2c2c solid 1px;
     margin: 2px;
+    background-color: transparent;
+    border-radius: 100px;
+}
+
+.chatLogBar:hover {
+    background-color: #c5c5c5;
+    cursor: pointer;
 }
 
 .chatLogItemImgContainer {
@@ -137,14 +146,18 @@
     align-items: center;
     width: 32px;
     height: 32px;
+    margin: 2px 8px 2px 12px;
 }
 
 .chatLogItemImg {
-    width: 28px;
-    height: 28px;
+    display: flex;
+    width: 21px;
+    height: 21px;
 }
 
 .chatLogItemText {
-    font-size: 18px;
+    font-size: 15px;
+    max-width: 160px;
+    overflow: hidden;
 }
 </style>
