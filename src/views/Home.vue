@@ -44,10 +44,11 @@ import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
-import {getUid, scrollToBottomWithAnimation,login } from "../js/util";
+import {getUid, scrollToBottomWithAnimation,login,isValid } from "../js/util";
 import arrowLeft from '../assets/arrowleft.svg'
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { jump2Ids } from "../js/util";
 
 const store = useStore();
 
@@ -58,6 +59,8 @@ onMounted(() => {
   if (ticket !== null) {
     console.log('Ticket:', ticket);
     login(ticket)
+  } else {
+    isValid()
   }
 })
 
