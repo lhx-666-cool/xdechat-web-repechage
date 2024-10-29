@@ -1,12 +1,12 @@
 <template>
     <div class="message" :class="{ 'message-user': role === 'user' }">
         <div class="avatorContainer" :class="{ 'hide': role === 'user' }">
-            <img src="../assets/logo.svg" class="avator unselectable">
+            <img :src="logo" class="avator unselectable">
 
         </div>
 
         <div class="avatorContainer" :class="{ 'hide': role === 'assistant' }">
-            <img src="../assets/user.svg" class="avator unselectable">
+            <img :src="user" class="avator unselectable">
 
         </div>
         <!--        <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }" @mouseover="showExtra[idx] = true" @mouseout="temp(); console.log('移除')">-->
@@ -17,19 +17,19 @@
 
                 <b-button class="copy actions" @click="copyToClip(text.replace(regex, '')); toast('复制成功')"
                     v-b-tooltip.hover.bottom title="复制">
-                    <img src="../assets/copy.svg" class="avator unselectable icon" title="复制">
+                    <img :src="copy" class="avator unselectable icon" title="复制">
                 </b-button>
 
                 <b-button class="like actions" v-b-tooltip.hover.bottom title="好答" @click="like()">
-                    <img src="../assets/like.svg" class="avator unselectable icon">
+                    <img :src="likeIcon" class="avator unselectable icon">
                 </b-button>
 
                 <b-button class="copy actions" v-b-tooltip.hover.bottom title="答得跟粑粑似的" @click="dislike">
-                    <img src="../assets/dislike.svg" class="avator unselectable icon">
+                    <img :src="dislikeIcon" class="avator unselectable icon">
                 </b-button>
 
                 <b-button class="copy actions" v-b-tooltip.hover.bottom title="反馈" @click="feedbackDialog = true">
-                    <img src="../assets/feedback.svg" class="avator unselectable icon">
+                    <img :src="feedbackIcon" class="avator unselectable icon">
                 </b-button>
             </b-button-group>
         </div>
@@ -48,8 +48,12 @@ import { defineProps, ref, watch } from 'vue';
 import Text from './Text.vue';
 import { copyToClip } from "../js/copy.ts";
 import { addFeedback } from "../js/api.js";
-import { getUid } from "../js/util.js";
-
+import logo from '../assets/logo.svg'
+import user from '../assets/user.svg'
+import copy from '../assets/copy.svg'
+import likeIcon from '../assets/like.svg'
+import dislikeIcon from '../assets/dislike.svg'
+import feedbackIcon from '../assets/feedback.svg'
 
 const feedbackDialog = ref(false)
 const feedbackMessage = ref("")
@@ -83,13 +87,13 @@ const props = defineProps({
 })
 
 function like() {
-    addFeedback(getUid(), JSON.stringify(props.messages), "like", '')
+    addFeedback(JSON.stringify(props.messages), "like", '')
         .then((res) => { console.log(res); toast("点赞成功") })
         .catch((err) => { console.log(err) })
 }
 
 function dislike() {
-    addFeedback(getUid(), JSON.stringify(props.messages), "dislike", '')
+    addFeedback(JSON.stringify(props.messages), "dislike", '')
         .then((res) => { console.log(res); toast("反馈成功") })
         .catch((err) => { console.log(err) })
 }
@@ -99,7 +103,7 @@ function feedback() {
         toast("反馈内容不能为空")
         return;
     }
-    addFeedback(getUid(), JSON.stringify(props.messages), "feedback", feedbackMessage.value)
+    addFeedback(JSON.stringify(props.messages), "feedback", feedbackMessage.value)
         .then((res) => { console.log(res); toast("反馈成功") })
         .catch((err) => { console.log(err) })
     feedbackMessage.value = ""

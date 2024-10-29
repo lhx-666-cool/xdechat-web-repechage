@@ -1,20 +1,41 @@
 <template>
   <div id="navbar-out">
     <div class="navbar-left">
-      <el-avatar shape="square" src="/src/assets/logo.svg" />
+      <el-avatar shape="square" :src="logo" />
       <span id="navbar-text"><span style="color: #b8001f;">慧通</span>大模型</span>
     </div>
     <div class="navbar-right">
       <!-- 右侧内容 -->
       <div class="navbar-ava">
-        <el-avatar src="/icon/unlogin.svg" :size="30" />
-        <div class="navbar-user">未登录</div>
+        <el-avatar :src="unlogin" :size="30" />
+        <div class="navbar-user">
+          <el-dropdown placement="bottom-end">
+            <span class="name">
+              {{ userName }}
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item v-if="userName!=='未登录'" @click="logout">退出登录</el-dropdown-item>
+                <el-dropdown-item v-if="userName==='未登录'" @click="jump2Ids">点击登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+      
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import {ref} from 'vue'
+import { jump2Ids, logout } from '../js/util'
+import logo from '../assets/logo.svg'
+import unlogin from '../assets/unlogin.svg'
+const userName = ref("")
+console.log(localStorage.getItem("username"))
+userName.value = localStorage.getItem("username")!==null?localStorage.getItem("username"):"未登录";
+</script>
 
 <style scoped>
 #navbar-out {
@@ -51,4 +72,5 @@
   align-items: center;
   gap: 10px;
 }
+
 </style>

@@ -13,7 +13,7 @@
     </aside>
     <aside class="sidebar-btn">
       <div class="toggleSidebar" @click="toggleSidebar">
-        <img class="toggleSidebar-left" src="/icon/arrowleft.svg" width="70%" height="70%" alt="">
+        <img class="toggleSidebar-left" :src="arrowLeft" width="70%" height="70%" alt="">
       </div>
     </aside>
     <div class="main-content">
@@ -44,8 +44,8 @@ import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
-import {getUid, scrollToBottomWithAnimation } from "../js/util";
-
+import {getUid, scrollToBottomWithAnimation,login } from "../js/util";
+import arrowLeft from '../assets/arrowleft.svg'
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 
@@ -53,7 +53,13 @@ const store = useStore();
 
 onMounted(() => {
   store.dispatch('setInputOccupied', false);
-});
+  const queryParams = new URLSearchParams(window.location.search);
+  const ticket = queryParams.get('ticket');
+  if (ticket !== null) {
+    console.log('Ticket:', ticket);
+    login(ticket)
+  }
+})
 
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
 const activateId = ref("")
@@ -70,7 +76,7 @@ const session_list = ref([])
 let ac_session = reactive(new Session())
 async function fetchChatHistory() {
   try {
-    const chatHistory = await getChatHistory(getUid());
+    const chatHistory = await getChatHistory();
     if (chatHistory === "err") {
       console.log("获取聊天记录失败后的错误处理")
     } else if (chatHistory.length === 0) {
@@ -78,7 +84,8 @@ async function fetchChatHistory() {
     } else {
       for (let i of chatHistory) {
         let record = JSON.parse(i.record)
-        session_list.value.unshift(new Session(i.id, i.uid, record.lastUpdate, record.messages, record.topic, record.type));
+        let file = i.file === undefined? "":i.file;
+        session_list.value.unshift(new Session(i.id, i.uid, record.lastUpdate, record.messages, record.topic, record.type, file));
       }
     }
     activateId.value = session_list.value[0].id;
@@ -124,7 +131,7 @@ const onSend = (data) => {
   setTimeout(() => {
     scrollToBottomWithAnimation("message-list")
   }, 0)
-  fetchStream(getUid(), ac_session);
+  fetchStream(ac_session);
 };
 
 function min(a, b) {
@@ -136,14 +143,8 @@ const handleDeleteMessage = (idx) => {
   if (session_list.value.length === 0) {
     session_list.value.push(new Session());
   }
-  //错误代码
   choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))
-  //正确代码
-  // setTimeout(() => {
-  //     choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1));
-  // }, 0)
-  // 莫名其妙的bug，烦死了，不要把乱七八糟的东西都设置成v-for的key
-  deleteMessage(getUid(), session_list.value[min(idx, session_list.value.length - 1)].id)
+  deleteMessage(session_list.value[min(idx, session_list.value.length - 1)].id)
       .then(res => {
         const toast = () => {
           ElMessage({
@@ -159,6 +160,7 @@ const handleDeleteMessage = (idx) => {
         console.log(e)
       })
 }
+
 
 </script>
 
