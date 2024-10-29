@@ -1,8 +1,21 @@
 <template>
+  <div class="fileBox" v-if="session.file !== ''">
+    <div class="fileicon">
+      <img :src="fileIcon">
+    </div>
+    <div class="desc">
+      {{ getSubstringAfterFirstUnderscore(session.file) }}
+      <!-- {{ session.file, console.log(session) }}  -->
+      <br>
+      <span class="filetype">
+        PDF
+      </span>
+    </div>
+  </div>
+  <input type="file" ref="fileInput" accept=".pdf" style="display: none;" @change="handleFileChange">
   <div class="chatInputComponent">
     <div>
-      <button class="upload"><img
-        src="../assets/upload.svg" alt="上传" /></button>
+      <button class="upload" @click="uploadFile"><img :src="uploadIcon" alt="上传" /></button>
     </div>
     <div class="chatInputContainer">
       <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
@@ -10,7 +23,7 @@
         rows="1"></textarea>
     </div>
     <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''"><img
-        src="../assets/send.svg" alt="发送" /></button>
+        :src="sendIcon" alt="发送" /></button>
   </div>
 </template>
 
@@ -24,7 +37,10 @@ import { computed } from 'vue';
 const isInputOccupied = computed(() => store.state.isInputOccupied);
 import { defineProps } from 'vue';
 import { Session } from "../js/session.js";
-
+import { uploadFileFunc } from '../js/api';
+import fileIcon from '../assets/file.svg'
+import uploadIcon from '../assets/upload.svg'
+import sendIcon from '../assets/send.svg'
 
 const props = defineProps({
   session: {
@@ -33,8 +49,48 @@ const props = defineProps({
   }
 })
 
+const toast = (message, type) => {
+    ElMessage({
+        message: message,
+        type,
+        plain: true,
+        duration: 1000
+    })
+}
+
 const chatInputArea = ref(null)
 const textareaHeight = ref("auto")
+const fileInput = ref(null)
+
+function uploadFile() {
+  fileInput.value.click();
+}
+
+function handleFileChange() {
+  const file = event.target.files[0];
+  if (file) {
+    if (file.type !== 'application/pdf') {
+      toast("上传文件必须为PDF", "error")
+      fileInput.value.value = ''
+      return;
+    }
+    if (file.size > (20 * 1024 * 1024)) {
+      toast("文件不可大于20MB", "error")
+      fileInput.value.value = ''
+      return;
+    }
+    toast("请稍等，文件正在上传", "message")
+    uploadFileFunc(file)
+    .then((res) => {
+      toast("文件上传成功", "success")
+      props.session.file = res.filename
+    })
+    .catch((e) => {
+      toast("文件上传失败", "error")
+      console.log(e)
+    })
+  }
+}
 function onInput() {
   textareaHeight.value = 'auto';
   nextTick(() => {
@@ -42,6 +98,16 @@ function onInput() {
     textareaHeight.value = `${scrollHeight - 16}px`;
   });
 }
+
+function getSubstringAfterFirstUnderscore(str) {
+    const underscoreIndex = str.indexOf('_');
+    if (underscoreIndex === -1) {
+        // If there is no underscore in the string, return an empty string or handle accordingly
+        return '';
+    }
+    return str.slice(underscoreIndex + 1);
+}
+
 const emit = defineEmits(['send-message']);
 function onSend() {
   if (isInputOccupied.value || props.session.type === '') return;
@@ -82,7 +148,7 @@ function handleKeydown(event) {
   max-height: 180px;
   border-radius: 32px;
   background-color: #F6F6F6;
-  width: calc(100%-20px);
+  width: calc(100% - 20px);
   border: 1px gray solids;
   padding: 10px;
   display: flex
@@ -153,6 +219,7 @@ textarea::-webkit-scrollbar {
   scale: 1.05;
   transition: 0.5s;
 }
+
 .upload {
   display: flex;
   justify-content: center;
@@ -169,8 +236,43 @@ textarea::-webkit-scrollbar {
   rotate: 2;
   transition: 0.5s;
 }
-.upload:hover{
+
+.upload:hover {
   background-color: #dfdfdf;
   cursor: pointer;
+}
+
+.fileBox {
+  display: flex;
+  padding: 5px;
+  background-color: rgb(246, 246, 246);
+  margin-bottom: 5px;
+  border-radius: 5px;
+  width: 200px;
+  align-items: center;
+  height: 45px;
+  justify-content: space-between;
+}
+
+.fileicon {
+  background-color: #cb3b3b;
+  border-radius: 5px;
+  height: 35px;
+  margin-left: 5px;
+  padding-top: 2px;
+}
+
+.desc {
+  flex-grow: 1;
+  padding-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: small;
+  white-space: nowrap;
+}
+
+.filetype {
+  font-weight: bolder;
+  color: #989898;
 }
 </style>

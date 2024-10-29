@@ -1,16 +1,18 @@
 <template>
 <div class="card" :class="{'ac': isac}">
-    <img src="../assets/message.svg" height="18px">
+    <img :src="message" height="18px">
     <span class="text">
         {{ text }}
     </span>
-   <img src="../assets/delete.svg" height="18px" :class="{'hide': !isac}" @click="deleteMessage"/>
+   <img :src="deleteIcon" height="18px" :class="{'hide': !isac}" @click="deleteMessage"/>
 </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
 import { defineEmits } from 'vue';
+import message from '../assets/message.svg'
+import deleteIcon from '../assets/delete.svg'
 
 const emit = defineEmits(['delete-message']);
 const deleteMessage = () => {

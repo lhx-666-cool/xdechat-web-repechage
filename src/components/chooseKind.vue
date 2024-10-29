@@ -7,7 +7,7 @@
             <div v-for="(item, index) in kinds" :key="index">
                 <div class="choose-card no-select" @click=choose(item.key) >
                     <div class="img">
-                        <img :src="'/src/assets/'+item.key+'.svg'" height="30px" draggable="false">
+                        <img :src="imageMap[item.key]" height="30px" draggable="false">
                     </div>
                     {{ item.describe }}
                 </div>
@@ -19,6 +19,24 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
 import { getKinds } from '../js/api';
+import system_database from '../assets/system_database.svg'
+import compute_database from '../assets/compute_database.svg'
+import circuit_database from '../assets/circuit_database.svg'
+import communication_database from '../assets/communication_database.svg'
+import microelectronics_database from '../assets/microelectronics_database.svg'
+import chat from '../assets/chat.svg'
+import paper from '../assets/paper.svg'
+
+const imageMap = {
+  system_database: system_database,
+  compute_database: compute_database,
+  circuit_database: circuit_database,
+  communication_database: communication_database,
+  microelectronics_database: microelectronics_database,
+  chat: chat,
+  paper: paper
+};
+
 const emit = defineEmits(['choose-key']);
 const kinds = ref([])
 async function fetchKinds() {
@@ -42,7 +60,6 @@ function choose(key) {
     };
     sendDataToParent();
 }
-
 
 
 

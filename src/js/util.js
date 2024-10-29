@@ -1,3 +1,5 @@
+import { backendUrl } from "./globalVariables";
+
 function generateRandomString(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -59,9 +61,39 @@ function scrollToBottomWithAnimation(className, duration = 500) {
     // 开始执行动画
     requestAnimationFrame(animateScroll);
 }
+
+function jump2Ids() {
+    window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://xdechat.xidian.edu.cn/114514"
+}
+
+function login(ticket) {
+    fetch(backendUrl + '/login?ticket=' + ticket)
+        .then(res => res.json())
+        .then((res) => {
+            localStorage.setItem('uid', res.uid);
+            localStorage.setItem('username', res.userName)
+            localStorage.setItem('access_token', res.access_token)
+            const currentUrl = window.location.href
+            const url = new URL(currentUrl);
+            url.search = '';
+            window.location.href = url.href;
+        })
+        .catch((e) => {
+            console.log(e)
+        })
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/114514"
+  }
+
 export {
     getUid,
     generateRandomString,
     scrollToBottom,
-    scrollToBottomWithAnimation
+    scrollToBottomWithAnimation,
+    login,
+    jump2Ids,
+    logout
 }
