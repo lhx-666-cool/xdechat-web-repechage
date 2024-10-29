@@ -85,9 +85,21 @@ function login(ticket) {
 
 function logout() {
     localStorage.clear();
-    window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/114514"
-  }
+    window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/"
+}
 
+function isValid() {
+    fetch(backendUrl + '/valid', {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+    })
+        .then(res => {
+            if (res.status === 401) {
+                jump2Ids()
+            }
+        })
+}
 export {
     getUid,
     generateRandomString,
@@ -95,5 +107,6 @@ export {
     scrollToBottomWithAnimation,
     login,
     jump2Ids,
-    logout
+    logout,
+    isValid
 }
