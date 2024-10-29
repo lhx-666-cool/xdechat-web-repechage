@@ -1,5 +1,5 @@
 import { backendUrl } from "./globalVariables"
-import { logout } from "./util";
+import { login } from "./util";
 async function getChatHistory() {
     try {
         const response = await fetch(backendUrl + "/get-record", {
@@ -11,7 +11,7 @@ async function getChatHistory() {
             const data = await response.json();
             return data.data;
         } else if(response.status === 401) {
-            logout();
+            login()
         } else {
             return "err"
         }
