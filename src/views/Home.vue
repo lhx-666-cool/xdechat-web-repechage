@@ -4,12 +4,8 @@
       <div class="new-chat" @click="newChat">
         创建新对话
       </div>
-<!--      正确代码-->
       <chatHistoryCard v-for="(item, index) in session_list" :key="index" :text="item.topic"
         :isac="activateId === item.id" :idx="index" @click="choice(item.id, index)" @delete-message="handleDeleteMessage"/>
-<!--          会触发bug的代码-->
-<!--      <chatHistoryCard v-for="(item, index) in session_list" :key="item.id" :text="item.topic"-->
-<!--                       :isac="activateId === item.id" :idx="index" @click="choice(item.id, index)" @delete-message="handleDeleteMessage"/>-->
     </aside>
     <aside class="sidebar-btn">
       <div class="toggleSidebar" @click="toggleSidebar">
@@ -48,10 +44,12 @@ import {getUid, scrollToBottomWithAnimation,login,isValid } from "../js/util";
 import arrowLeft from '../assets/arrowleft.svg'
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
-import { jump2Ids } from "../js/util";
-
 const store = useStore();
 
+
+
+const isCollapsed = ref(false); // 使用ref来创建响应式变量
+const activateId = ref("")
 onMounted(() => {
   store.dispatch('setInputOccupied', false);
   const queryParams = new URLSearchParams(window.location.search);
@@ -62,10 +60,12 @@ onMounted(() => {
   } else {
     isValid()
   }
+  const screenWidth = window.innerWidth;
+  if (screenWidth <= 768) {
+    isCollapsed.value = true
+    $('.toggleSidebar-left').css('transform', 'scaleX(-1)')
+  }
 })
-
-const isCollapsed = ref(false); // 使用ref来创建响应式变量
-const activateId = ref("")
 function toggleSidebar() {
   isCollapsed.value = !isCollapsed.value; // 切换侧边栏状态
   if (isCollapsed.value === true) {
