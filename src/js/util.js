@@ -63,7 +63,7 @@ function scrollToBottomWithAnimation(className, duration = 500) {
 }
 
 function jump2Ids() {
-    window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://xdechat.xidian.edu.cn/114514"
+    window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://xdechat.xidian.edu.cn/"
 }
 
 function login(ticket) {
