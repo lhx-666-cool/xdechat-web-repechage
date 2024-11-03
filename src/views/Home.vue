@@ -93,6 +93,7 @@ async function fetchChatHistory() {
     }
     activateId.value = session_list.value[0].id;
     ac_session = session_list.value[0];
+    newChat();
   } catch (error) {
     console.error('获取聊天记录失败:', error);
   }
@@ -144,6 +145,7 @@ function min(a, b) {
 const handleDeleteMessage = (idx) => {
   session_list.value.splice(idx, 1);
   if (session_list.value.length === 0) {
+    console.log(111)
     session_list.value.push(new Session());
   }
   choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))

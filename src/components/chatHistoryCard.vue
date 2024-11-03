@@ -4,7 +4,7 @@
     <span class="text">
         {{ text }}
     </span>
-   <img :src="deleteIcon" height="18px" :class="{'hide': !isac}" @click="deleteMessage"/>
+   <img :src="deleteIcon" height="18px" :class="{'hide': !isac}" @click.stop="deleteMessage"/>
 </div>
 </template>
 
