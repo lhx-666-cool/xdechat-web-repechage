@@ -61,14 +61,11 @@ function choose(key) {
     sendDataToParent();
 }
 
-
-
-
 </script>
 
 <style scoped>
 .choose{
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 600px;
     overflow-x: hidden;
 }
