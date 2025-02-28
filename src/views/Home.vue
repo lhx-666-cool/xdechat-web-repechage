@@ -143,13 +143,7 @@ function min(a, b) {
 }
 
 const handleDeleteMessage = (idx) => {
-  session_list.value.splice(idx, 1);
-  if (session_list.value.length === 0) {
-    console.log(111)
-    session_list.value.push(new Session());
-  }
-  choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))
-  deleteMessage(session_list.value[min(idx, session_list.value.length - 1)].id)
+  deleteMessage(session_list.value[idx].id)
       .then(res => {
         const toast = () => {
           ElMessage({
@@ -164,6 +158,13 @@ const handleDeleteMessage = (idx) => {
       .catch(e => {
         console.log(e)
       })
+  session_list.value.splice(idx, 1);
+  if (session_list.value.length === 0) {
+    console.log(111)
+    session_list.value.push(new Session());
+  }
+  choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))
+
 }
 
 
