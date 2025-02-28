@@ -19,6 +19,7 @@ async function getKinds() {
 }
 
 async function fetchStream(session) {
+    console.log("open:open")
     const controller = new AbortController();
     const payload = {
         messages: session.messages.slice(0, session.messages.length - 1),
