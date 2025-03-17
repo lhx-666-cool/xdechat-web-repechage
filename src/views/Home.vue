@@ -270,6 +270,7 @@ const handleDeleteMessage = (idx) => {
   text-align: center;
   font-size: small;
   padding: 5px;
+  cursor: pointer
 }
 
 .new-chat:hover {

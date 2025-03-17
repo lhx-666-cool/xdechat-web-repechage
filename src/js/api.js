@@ -8,6 +8,7 @@ async function getKinds() {
         const response = await fetch(backendUrl + "/kinds");
         if (response.status === 200) {
             const data = await response.json();
+            console.log(data);
             return data;
         } else {
             return "err"
@@ -24,8 +25,11 @@ async function fetchStream(session) {
     const payload = {
         messages: session.messages.slice(0, session.messages.length - 1),
         stream: true,
-        type: session.type,
-        record_id: session.id
+        intention: session.type,
+        record_id: session.id,
+        local_retrieval: session.local_retrieval,
+        online_retrieval: session.online_retrieval,
+        r1_model: session.r1_model,
     }
     if (session.file !== "") {
         payload.file_url = session.file;

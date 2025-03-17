@@ -1,15 +1,32 @@
 <template>
     <div class="choose">
-        <div class="title">
+        <div class="title no-select">
             欢迎使用<br>西电慧通大模型
         </div>
+        <div class="feature-box no-select">
+            <div class="feature">
+                <div class="teach tag active" @click="chooseKind(0, 'teach')">
+                    教
+                </div>
+                <div class="learn  tag" @click="chooseKind(1, 'learn')">
+                    学
+                </div>
+                <div class="admin  tag" @click="chooseKind(2, 'admin')">
+                    管
+                </div>
+                <div class="review  tag" @click="chooseKind(3, 'review')">
+                    评
+                </div>
+            </div>
+        </div>
+        
         <div class="btns">
-            <div v-for="(item, index) in kinds" :key="index">
+            <div v-for="(item, index) in allKinds[option]" :key="index">
                 <div class="choose-card no-select" @click=choose(item.key) >
                     <div class="img">
                         <img :src="imageMap[item.key]" height="30px" draggable="false">
                     </div>
-                    {{ item.describe }}
+                    {{ item.desc }}
                 </div>
             </div>
         </div>
@@ -24,33 +41,58 @@ import compute_database from '../assets/compute_database.svg'
 import circuit_database from '../assets/circuit_database.svg'
 import communication_database from '../assets/communication_database.svg'
 import microelectronics_database from '../assets/microelectronics_database.svg'
+import instruct_design from '../assets/instruct_design.svg'
 import chat from '../assets/chat.svg'
 import paper from '../assets/paper.svg'
+import $ from 'jquery';
+import task from '../assets/task.svg'
+import graduate_paper from '../assets/graduate_paper.svg'
+import doctor_paper from '../assets/doctor_paper.svg'
+import origanzation from '../assets/organization.svg'
 
 const imageMap = {
-  system_database: system_database,
-  compute_database: compute_database,
-  circuit_database: circuit_database,
-  communication_database: communication_database,
-  microelectronics_database: microelectronics_database,
+  system_inquiry: system_database,
+  compute_qa: compute_database,
+  circuit_qa: circuit_database,
+  communication_qa: communication_database,
+  microelectronics_qa: microelectronics_database,
   chat: chat,
-  paper: paper
+  paper: paper,
+  instruction_design_generation: instruct_design,
+  test_question_generation: task,
+  undergraduate_paper: paper,
+  graduate_paper: graduate_paper,
+  academic_doctor_paper: doctor_paper,
+  engineer_doctor_paper: doctor_paper,
+  organization_department: origanzation,
+  graduate_evaluation: graduate_paper,
 };
 
+
+
 const emit = defineEmits(['choose-key']);
-const kinds = ref([])
+const allKinds = ref([])
+const option = ref(0)
+
+function chooseKind(idx, className) {
+    option.value = idx;
+    $('.tag').removeClass('active');
+    $(`.${className}`).addClass('active');
+}
 async function fetchKinds() {
   try {
     const res = await getKinds();
     if (res === "err") {
       console.log("获取类型失败的错误处理")
     } else {
-        kinds.value = res
+        allKinds.value = res.data;
     }
   } catch (error) {
     console.error('获取聊天记录失败:', error);
   }
 }
+
+
 
 fetchKinds();
 
@@ -105,4 +147,53 @@ function choose(key) {
     cursor: pointer;
   }
 
+.feature {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid rgb(58, 139, 255);
+    border-radius: 50px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+}
+.feature-box {
+    margin-top: 10px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+}
+.tag {
+    width: 25%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: rgb(58, 139, 255, 0.5);
+    color:rgb(0, 106, 255);
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+.tag:hover {
+    background-color: rgb(58, 139, 255, 0.7);
+    cursor: pointer;
+}
+.teach {
+    border-radius: 50px 0 0 50px;
+    border-right: 2px solid rgb(58, 139, 255);
+}
+.active{
+    background-color: rgb(58, 139, 255);
+    color: white;
+
+}
+.admin {
+    border-left: 2px solid rgb(58, 139, 255);
+
+}
+.review {
+    border-radius: 0 50px 50px 0;
+    border-left: 2px solid rgb(58, 139, 255);
+}
 </style>

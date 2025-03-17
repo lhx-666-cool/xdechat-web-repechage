@@ -5,7 +5,6 @@
     </div>
     <div class="desc">
       {{ getSubstringAfterFirstUnderscore(session.file) }}
-      <!-- {{ session.file, console.log(session) }}  -->
       <br>
       <span class="filetype">
         PDF
@@ -14,16 +13,50 @@
   </div>
   <input type="file" ref="fileInput" accept=".pdf" style="display: none;" @change="handleFileChange">
   <div class="chatInputComponent">
-    <div>
-      <button class="upload" @click="uploadFile"><img :src="uploadIcon" alt="上传" /></button>
-    </div>
+    <!-- <div>
+      <button class="upload" @click="uploadFile">
+        <img :src="uploadIcon" alt="上传" />
+      </button>
+    </div> -->
+    <el-tooltip
+      class="box-item"
+      effect="dark"
+      content="深度思考"
+      placement="top"
+    >
+      <div class="thinkicon no-select"  @click="handleThink">
+        <img :src="thinkIcon" alt="思考" style="fill:#424242">
+      </div>
+    </el-tooltip>
+    <el-tooltip
+      class="box-item"
+      effect="dark"
+      content="本地知识库检索"
+      placement="top"
+    >
+      <div class="lricon no-select"  @click="handlelr">
+        <img :src="localRrtrievalIcon" alt="本机检索" style="fill:#424242">
+      </div>
+    </el-tooltip>
+    <el-tooltip
+      class="box-item"
+      effect="dark"
+      content="搜索模式"
+      placement="top"
+    >
+      <div class="oricon no-select"  @click="handleor">
+        <img :src="onlineRrtrievalIcon" alt="网络检索" style="fill:#424242">
+      </div>
+    </el-tooltip>
     <div class="chatInputContainer">
       <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
         @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : '问点什么'"
         rows="1"></textarea>
     </div>
-    <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''"><img
-        :src="sendIcon" alt="发送" /></button>
+    
+    <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''">
+      <img :src="sendIcon" alt="发送" />
+    </button>
   </div>
 </template>
 
@@ -33,7 +66,7 @@ import { scrollToBottom, scrollToBottomWithAnimation } from "../js/util.js";
 import $, { data } from 'jquery'
 import { useStore } from 'vuex';
 const store = useStore();
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 const isInputOccupied = computed(() => store.state.isInputOccupied);
 import { defineProps } from 'vue';
 import { Session } from "../js/session.js";
@@ -41,6 +74,12 @@ import { uploadFileFunc } from '../js/api';
 import fileIcon from '../assets/file.svg'
 import uploadIcon from '../assets/upload.svg'
 import sendIcon from '../assets/send.svg'
+import thinkIcon from '../assets/think.svg'
+import thinkActivateIcon from '../assets/thinkactivate.svg'
+import localRrtrievalIcon from '../assets/local_retrieval.svg'
+import onlineRrtrievalIcon from '../assets/online_retrieval.svg'
+import localRetrievalAc from '../assets/local_retrieval_ac.svg'
+import onlineRetrievalAc from '../assets/online_retrieval_ac.svg'
 
 const props = defineProps({
   session: {
@@ -58,13 +97,68 @@ const toast = (message, type) => {
     })
 }
 
+
+
 const chatInputArea = ref(null)
 const textareaHeight = ref("auto")
 const fileInput = ref(null)
+const think = ref(false);
+const lr = ref(false);
+const or = ref(false);
+
+const id = computed(() => props.session.id)
 
 function uploadFile() {
   fileInput.value.click();
 }
+
+function handleThink(e, n=false) {
+  if (think.value || n) {
+    think.value = false;
+    $('.thinkicon img').attr("src", thinkIcon);
+    $('.thinkicon').css('background-color', 'transparent')
+    props.session.r1_model = false;
+    return;
+  }
+  think.value = true;
+  props.session.r1_model = true;
+  $('.thinkicon img').attr("src", thinkActivateIcon);
+  $('.thinkicon').css('background-color', '#00b7ff54')
+}
+
+function handlelr(e, n=false) {
+  if (lr.value || n) {
+    lr.value = false;
+    $('.lricon img').attr("src", localRrtrievalIcon);
+    $('.lricon').css('background-color', 'transparent')
+    props.session.local_retrieval = false;
+    return;
+  }
+  lr.value = true;
+  props.session.local_retrieval = true;
+  $('.lricon img').attr("src", localRetrievalAc);
+  $('.lricon').css('background-color', '#00b7ff54')
+}
+
+function handleor(e, n=false) {
+  if (or.value || n) {
+    or.value = false;
+    $('.oricon').css('background-color', 'transparent')
+    $('.oricon img').attr("src", onlineRrtrievalIcon);
+    props.session.online_retrieval = false;
+    return;
+  }
+  or.value = true;
+  props.session.online_retrieval = true;
+  $('.oricon img').attr("src", onlineRetrievalAc);
+  $('.oricon').css('background-color', '#00b7ff54')
+}
+
+watch(id, () => {
+  handleThink("", true);
+  handlelr("", true);
+  handleor("", true);
+})
 
 function handleFileChange() {
   const file = event.target.files[0];
@@ -139,6 +233,14 @@ function handleKeydown(event) {
 </script>
 
 <style Lang="sass" scoped>
+
+.no-select {
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  cursor: pointer;
+}
 .chatInputComponent {
   display: flex;
   align-items: center;
@@ -164,7 +266,7 @@ function handleKeydown(event) {
 .chatInput {
   display: flex;
   flex-grow: 1;
-  padding: 8px 10px 8px 20px;
+  padding: 0排序10px 8px 20px;
 
   resize: none;
   width: 95%;
@@ -195,7 +297,6 @@ textarea::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-
   flex-shrink: 0;
   width: 48px;
   height: 48px;
@@ -224,10 +325,9 @@ textarea::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border: 0;
   background-color: transparent;
   border-radius: 25px;
@@ -262,6 +362,33 @@ textarea::-webkit-scrollbar {
   padding-top: 2px;
 }
 
+.thinkicon, .lricon, .oricon {
+  border-radius: 25px;
+  height: 40px;
+  width: 30px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.5s ease; /* 过渡效果 */
+  margin-left: 2px;
+}
+
+.thinkicon:hover, .lricon:hover, .oricon:hover {
+  background-color: #dfdfdf;
+  cursor: pointer;
+}
+
+.thinkicon-ac, .lricon-ac, .oricon-ac {
+  border-radius: 25px;
+  height: 40px;
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #00b7ff54;
+}
 .desc {
   flex-grow: 1;
   padding-left: 10px;

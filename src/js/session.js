@@ -13,6 +13,9 @@ class Session{
                 content: '请问你有什么需要帮助的吗'
             }],
             this.file = "";
+            this.r1_model = false;
+            this.local_retrieval = false;
+            this.online_retrieval = false;
         }else {
             this.id = id;
             this.uid = uid;
@@ -21,6 +24,9 @@ class Session{
             this.topic = topic;
             this.type = type;
             this.file = file;
+            this.r1_model = false;
+            this.local_retrieval = false;
+            this.online_retrieval = false;
         }
     }
 }
