@@ -15,12 +15,12 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item v-if="userName!=='未登录'" @click="logout">退出登录</el-dropdown-item>
-                <el-dropdown-item v-if="userName==='未登录'" @click="jump2Ids">点击登录</el-dropdown-item>
+                <el-dropdown-item v-if="userName !== '未登录'" @click="logout">退出登录</el-dropdown-item>
+                <el-dropdown-item v-if="userName === '未登录'" @click="jump2Ids">点击登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-      
+
         </div>
       </div>
     </div>
@@ -28,13 +28,13 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import { jump2Ids, logout } from '../js/util'
 import logo from '../assets/logo.svg'
 import unlogin from '../assets/unlogin.svg'
 const userName = ref("")
 console.log(localStorage.getItem("username"))
-userName.value = localStorage.getItem("username")!==null?localStorage.getItem("username"):"未登录";
+userName.value = localStorage.getItem("username") !== null ? localStorage.getItem("username") : "未登录";
 </script>
 
 <style scoped>
@@ -47,6 +47,7 @@ userName.value = localStorage.getItem("username")!==null?localStorage.getItem("u
   justify-content: space-between;
   align-items: center;
 }
+
 .navbar-left,
 .navbar-right {
   display: flex;
@@ -64,19 +65,26 @@ userName.value = localStorage.getItem("username")!==null?localStorage.getItem("u
   margin-left: 20px;
   background-color: transparent;
   cursor: pointer;
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none;    /* Firefox */
-  -ms-user-select: none;     /* IE10+/Edge */
-  user-select: none;         /* Standard */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
 }
+
 .navbar-user {
   font-size: small;
 }
+
 .navbar-ava {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .features {
   display: flex;
   align-items: center;

@@ -1,6 +1,13 @@
-import { backendUrl } from "./globalVariables"
-import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { scrollToBottom, scrollToBottomWithAnimation } from "./util.js";
+import {
+    backendUrl
+} from "./globalVariables"
+import {
+    fetchEventSource
+} from '@microsoft/fetch-event-source';
+import {
+    scrollToBottom,
+    scrollToBottomWithAnimation
+} from "./util.js";
 import store from '../store'
 
 async function getKinds() {
@@ -56,7 +63,9 @@ async function fetchStream(session) {
                     }, 0)
                     messageEnd(session)
                 }).catch(err => {
-                    session.messages[session.messages.length - 1].content = '```json\n' + JSON.stringify({ error: response.status }, null, 2) + '\n```'
+                    session.messages[session.messages.length - 1].content = '```json\n' + JSON.stringify({
+                        error: response.status
+                    }, null, 2) + '\n```'
                     setTimeout(() => {
                         scrollToBottom("message-list")
                     }, 0)
@@ -107,10 +116,10 @@ function messageEnd(session) {
 function deleteMessage(id) {
     return new Promise((resolve, reject) => {
         fetch(backendUrl + `/delete-record?id=${id}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            },
-        })
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                },
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -129,16 +138,16 @@ function deleteMessage(id) {
 function addFeedback(record, type, content) {
     return new Promise((resolve, reject) => {
         fetch(backendUrl + `/add`, {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            },
-            body: JSON.stringify({
-                record,
-                type,
-                content
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                },
+                body: JSON.stringify({
+                    record,
+                    type,
+                    content
+                })
             })
-        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -159,12 +168,12 @@ function uploadFileFunc(file) {
     formData.append('file', file);
     return new Promise((resolve, reject) => {
         fetch(backendUrl + `/upload`, {
-            method: "POST",
-            body: formData,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-            },
-        })
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                },
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);

@@ -1,10 +1,10 @@
 <template>
-    <chatLogsSidebar/>
+    <chatLogsSidebar />
 
 </template>
 
 <script setup>
-    import chatLogsSidebar from "../components/chatLogsSidebar.vue";
+import chatLogsSidebar from "../components/chatLogsSidebar.vue";
 </script>
 
 <style lang="sass" scoped>

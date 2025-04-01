@@ -13,47 +13,41 @@
   </div>
   <input type="file" ref="fileInput" accept=".pdf" style="display: none;" @change="handleFileChange">
   <div class="chatInputComponent">
-    <!-- <div>
-      <button class="upload" @click="uploadFile">
+    <div>
+      <button v-show="session.type.endsWith('paper')" class="upload" @click="uploadFile">
         <img :src="uploadIcon" alt="上传" />
       </button>
-    </div> -->
-    <el-tooltip
-      class="box-item"
-      effect="dark"
-      content="深度思考"
-      placement="top"
-    >
-      <div class="thinkicon no-select"  @click="handleThink">
-        <img :src="thinkIcon" alt="思考" style="fill:#424242">
-      </div>
-    </el-tooltip>
-    <el-tooltip
-      class="box-item"
-      effect="dark"
-      content="本地知识库检索"
-      placement="top"
-    >
-      <div class="lricon no-select"  @click="handlelr">
-        <img :src="localRrtrievalIcon" alt="本机检索" style="fill:#424242">
-      </div>
-    </el-tooltip>
-    <el-tooltip
-      class="box-item"
-      effect="dark"
-      content="搜索模式"
-      placement="top"
-    >
-      <div class="oricon no-select"  @click="handleor">
-        <img :src="onlineRrtrievalIcon" alt="网络检索" style="fill:#424242">
-      </div>
-    </el-tooltip>
+    </div>
+    <div v-show="!session.type.endsWith('paper')">
+      <el-tooltip class="box-item" effect="dark" content="深度思考" placement="top">
+        <div class="thinkicon no-select" @click="handleThink">
+          <img :src="thinkIcon" alt="思考" style="fill:#424242">
+        </div>
+      </el-tooltip>
+    </div>
+    <div v-show="!session.type.endsWith('paper')">
+      <el-tooltip class="box-item" effect="dark" content="本地知识库检索" placement="top"
+        v-show="!session.type.endsWith('paper')">
+        <div class="lricon no-select" @click="handlelr">
+          <img :src="localRrtrievalIcon" alt="本机检索" style="fill:#424242">
+        </div>
+      </el-tooltip>
+    </div>
+    <div v-show="!session.type.endsWith('paper')">
+      <el-tooltip class="box-item" effect="dark" content="搜索模式" placement="top"
+        v-show="!session.type.endsWith('paper')">
+        <div class="oricon no-select" @click="handleor">
+          <img :src="onlineRrtrievalIcon" alt="网络检索" style="fill:#424242">
+        </div>
+      </el-tooltip>
+    </div>
+
     <div class="chatInputContainer">
       <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
         @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : '问点什么'"
         rows="1"></textarea>
     </div>
-    
+
     <button class="send" @click="onSend" :disabled="isInputOccupied || props.session.type === ''">
       <img :src="sendIcon" alt="发送" />
     </button>
@@ -89,12 +83,12 @@ const props = defineProps({
 })
 
 const toast = (message, type) => {
-    ElMessage({
-        message: message,
-        type,
-        plain: true,
-        duration: 1000
-    })
+  ElMessage({
+    message: message,
+    type,
+    plain: true,
+    duration: 1000
+  })
 }
 
 
@@ -112,7 +106,7 @@ function uploadFile() {
   fileInput.value.click();
 }
 
-function handleThink(e, n=false) {
+function handleThink(e, n = false) {
   if (think.value || n) {
     think.value = false;
     $('.thinkicon img').attr("src", thinkIcon);
@@ -126,7 +120,7 @@ function handleThink(e, n=false) {
   $('.thinkicon').css('background-color', '#00b7ff54')
 }
 
-function handlelr(e, n=false) {
+function handlelr(e, n = false) {
   if (lr.value || n) {
     lr.value = false;
     $('.lricon img').attr("src", localRrtrievalIcon);
@@ -140,7 +134,7 @@ function handlelr(e, n=false) {
   $('.lricon').css('background-color', '#00b7ff54')
 }
 
-function handleor(e, n=false) {
+function handleor(e, n = false) {
   if (or.value || n) {
     or.value = false;
     $('.oricon').css('background-color', 'transparent')
@@ -175,14 +169,14 @@ function handleFileChange() {
     }
     toast("请稍等，文件正在上传", "message")
     uploadFileFunc(file)
-    .then((res) => {
-      toast("文件上传成功", "success")
-      props.session.file = res.filename
-    })
-    .catch((e) => {
-      toast("文件上传失败", "error")
-      console.log(e)
-    })
+      .then((res) => {
+        toast("文件上传成功", "success")
+        props.session.file = res.filename
+      })
+      .catch((e) => {
+        toast("文件上传失败", "error")
+        console.log(e)
+      })
   }
 }
 function onInput() {
@@ -194,12 +188,12 @@ function onInput() {
 }
 
 function getSubstringAfterFirstUnderscore(str) {
-    const underscoreIndex = str.indexOf('_');
-    if (underscoreIndex === -1) {
-        // If there is no underscore in the string, return an empty string or handle accordingly
-        return '';
-    }
-    return str.slice(underscoreIndex + 1);
+  const underscoreIndex = str.indexOf('_');
+  if (underscoreIndex === -1) {
+    // If there is no underscore in the string, return an empty string or handle accordingly
+    return '';
+  }
+  return str.slice(underscoreIndex + 1);
 }
 
 const emit = defineEmits(['send-message']);
@@ -233,14 +227,18 @@ function handleKeydown(event) {
 </script>
 
 <style Lang="sass" scoped>
-
 .no-select {
-  user-select: none; /* Standard syntax */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Standard syntax */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
   cursor: pointer;
 }
+
 .chatInputComponent {
   display: flex;
   align-items: center;
@@ -362,7 +360,9 @@ textarea::-webkit-scrollbar {
   padding-top: 2px;
 }
 
-.thinkicon, .lricon, .oricon {
+.thinkicon,
+.lricon,
+.oricon {
   border-radius: 25px;
   height: 40px;
   width: 30px;
@@ -370,16 +370,21 @@ textarea::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.5s ease; /* 过渡效果 */
+  transition: background-color 0.5s ease;
+  /* 过渡效果 */
   margin-left: 2px;
 }
 
-.thinkicon:hover, .lricon:hover, .oricon:hover {
-  background-color: #dfdfdf;
+.thinkicon:hover,
+.lricon:hover,
+.oricon:hover {
+  background-color: #dfdfdf !important;
   cursor: pointer;
 }
 
-.thinkicon-ac, .lricon-ac, .oricon-ac {
+.thinkicon-ac,
+.lricon-ac,
+.oricon-ac {
   border-radius: 25px;
   height: 40px;
   width: 40px;
@@ -389,6 +394,7 @@ textarea::-webkit-scrollbar {
   align-items: center;
   background-color: #00b7ff54;
 }
+
 .desc {
   flex-grow: 1;
   padding-left: 10px;

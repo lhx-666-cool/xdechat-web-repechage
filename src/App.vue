@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <router-view :key="$route.fullPath"/>
+  <router-view :key="$route.fullPath" />
 </template>
 
 <script setup>
@@ -28,12 +28,10 @@ body {
 }
 
 button {
-	cursor: pointer;
-	appearance: none;
-	border: none;
-	outline: none;
-	background: none;
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
 }
-
-
 </style>

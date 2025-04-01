@@ -1,4 +1,6 @@
-import { createStore } from 'vuex';
+import {
+    createStore
+} from 'vuex';
 
 export default createStore({
     state() {
@@ -12,7 +14,9 @@ export default createStore({
         },
     },
     actions: {
-        setInputOccupied({ commit }, isOccupied) {
+        setInputOccupied({
+            commit
+        }, isOccupied) {
             commit('SET_INPUT_OCCUPIED', isOccupied);
         },
     },

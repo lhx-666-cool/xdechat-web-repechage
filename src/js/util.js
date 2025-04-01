@@ -1,4 +1,6 @@
-import { backendUrl } from "./globalVariables";
+import {
+    backendUrl
+} from "./globalVariables";
 
 function generateRandomString(length) {
     var result = '';
@@ -90,10 +92,10 @@ function logout() {
 
 function isValid() {
     fetch(backendUrl + '/valid', {
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-    })
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+        })
         .then(res => {
             if (res.status === 401) {
                 jump2Ids()
