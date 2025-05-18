@@ -13,25 +13,25 @@
         <div class="text" :class="{ 'text-user': role === 'user', 'text-bot': role === 'assistant' }">
             <Text :text="text" />
             <!--            <div class="icons" v-if="role === 'assistant' && showExtra[idx]" @mouseover="showExtra[idx] = true; toast('111')">-->
-            <b-button-group class="icons" v-if="role === 'assistant'">
+            <div class="icons" v-if="role === 'assistant'">
 
-                <b-button class="copy actions" @click="copyToClip(text.replace(regex, '')); toast('复制成功')"
-                    v-b-tooltip.hover.bottom title="复制">
+                <button class="copy actions" @click="copyToClip(text.replace(regex, '')); toast('复制成功')"
+                    title="复制">
                     <img :src="copy" class="avator unselectable icon" title="复制">
-                </b-button>
+                </button>
 
-                <b-button class="like actions" v-b-tooltip.hover.bottom title="好答" @click="like()">
+                <button class="like actions"  title="点赞" @click="like()">
                     <img :src="likeIcon" class="avator unselectable icon">
-                </b-button>
+                </button>
 
-                <b-button class="copy actions" v-b-tooltip.hover.bottom title="答得跟粑粑似的" @click="dislike">
+                <button class="copy actions" title="点踩" @click="dislike">
                     <img :src="dislikeIcon" class="avator unselectable icon">
-                </b-button>
+                </button>
 
-                <b-button class="copy actions" v-b-tooltip.hover.bottom title="反馈" @click="feedbackDialog = true">
+                <button class="copy actions" title="反馈" @click="feedbackDialog = true">
                     <img :src="feedbackIcon" class="avator unselectable icon">
-                </b-button>
-            </b-button-group>
+                </button>
+            </div>
         </div>
     </div>
     <el-dialog v-model="feedbackDialog" title="反馈" width="500" align-center>
@@ -143,9 +143,22 @@ div {
 .text-user {
     margin-top: 5px;
     background-color: rgb(210, 249, 209);
-
+}
+.dark .text-user {
+    background-color: rgb(25, 78, 45);
 }
 
+.dark .text-user * {
+    color: #bcc3ca;
+}
+
+.dark .text-bot {
+    background-color: #1e1e20;
+}
+
+.dark .text-bot * {
+    color: #bcc3ca;
+}
 .unselectable {
     -webkit-user-select: none;
     /* Safari */
@@ -169,7 +182,6 @@ div {
 
 .avator {
     display: flex;
-
     width: 38px;
     height: 38px;
     border-radius: 5px
@@ -208,6 +220,8 @@ div {
     /* IE 10+ 和 Edge */
     user-select: none;
     /* 标准语法 */
+    border: 0px;
+    border-radius: 10px;
 }
 
 .actions:hover {

@@ -187,10 +187,16 @@ const handleDeleteMessage = (idx) => {
   overflow-y: auto;
 }
 
+.dark .sidebar {
+  background-color: #18181c;
+  color: #c9d1d9;
+}
+
+
 .sidebar-collapsed {
   width: 0;
   transform: translateX(-200px);
-  transition: all 0.3s;
+  transition: ease-in-out 0.3s;
   background-color: #eeeeee;
 }
 
@@ -201,6 +207,11 @@ const handleDeleteMessage = (idx) => {
   height: 100%;
   min-width: calc(100% - 200px);
   padding: 0;
+  background-color: white;
+}
+
+.dark .main-content{
+  background-color: #101014;
 }
 
 
@@ -248,6 +259,8 @@ const handleDeleteMessage = (idx) => {
   width: 0;
 }
 
+
+
 .toggleSidebar {
   width: 30px;
   height: 30px;
@@ -258,6 +271,10 @@ const handleDeleteMessage = (idx) => {
   justify-content: center;
   transform: translateX(10px);
   z-index: 100;
+}
+
+.dark .toggleSidebar {
+  background-color: #818185;
 }
 
 .toggleSidebar-left {

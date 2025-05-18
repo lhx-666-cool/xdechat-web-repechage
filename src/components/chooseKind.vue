@@ -61,7 +61,8 @@ const imageMap = {
     instruction_design_generation: instruct_design,
     test_question_generation: task,
     undergraduate_paper: paper,
-    graduate_paper: graduate_paper,
+    academic_graduate_paper: graduate_paper,
+    engineer_graduate_paper: graduate_paper,
     academic_doctor_paper: doctor_paper,
     engineer_doctor_paper: doctor_paper,
     organization_department: origanzation,
@@ -138,6 +139,11 @@ function choose(key) {
     transform: scale(1.1);
 }
 
+.dark .choose-card {
+    background-color: #4f525a;
+    color: white;
+}
+
 .btns {
     display: flex;
     justify-content: center;
@@ -186,6 +192,7 @@ function choose(key) {
     font-weight: bolder;
     font-size: 1.2em;
 }
+
 
 .tag:hover {
     background-color: rgb(58, 139, 255, 0.7);

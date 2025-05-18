@@ -8,10 +8,10 @@ import Navbar from "./components/Navbar.vue";
 
 </script>
 
-<style Lang="sass" scoped>
+<style Lang="sass" >
 :root {
   --primary: #ebebeb;
-  --dark: #1e293b;
+  --dark: #101014;
   --sidebar-width: 300px;
 }
 
@@ -20,11 +20,14 @@ import Navbar from "./components/Navbar.vue";
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   background: var(--light);
   overflow-x: hidden;
   overflow-y: hidden;
+}
+
+.dark body {
+  background-color: var(--dark);
 }
 
 button {
