@@ -25,4 +25,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/xdechat_web:1.1.1
+        tags: ${{ secrets.DOCKER_USERNAME }}/xdechat_web:1.1.2
