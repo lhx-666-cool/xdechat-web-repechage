@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" :style="{height: componentHeight}">
     <aside :class="{ 'sidebar-collapsed': isCollapsed, 'sidebar': !isCollapsed }">
       <div class="new-chat" @click="newChat">
         创建新对话
@@ -44,11 +44,23 @@ import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
 import { getUid, scrollToBottomWithAnimation, login, isValid } from "../js/util";
 import arrowLeft from '../assets/arrowleft.svg'
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
+const componentHeight = ref('100vh')
+const setComponentHeight = () => {
+  componentHeight.value = window.innerHeight -  50 + 'px';
+}
 
+onMounted(() => {
+  setComponentHeight();
+  window.addEventListener('resize', setComponentHeight);
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', setComponentHeight);
+})
 
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
 const activateId = ref("")
@@ -175,7 +187,6 @@ const handleDeleteMessage = (idx) => {
 <style scoped>
 .container {
   display: flex;
-  height: calc(100vh - 60px);
   overflow: hidden;
 }
 
