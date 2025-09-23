@@ -18,3 +18,5 @@ fixed some bug
 后端域名现在是xdechat
 # 1.1.5huitong
 后端域名是huitong
+# 1.1.6
+加了三个意图
