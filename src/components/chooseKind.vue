@@ -67,6 +67,9 @@ const imageMap = {
     engineer_doctor_paper: doctor_paper,
     organization_department: origanzation,
     graduate_evaluation: graduate_paper,
+    generate_plan_report: doctor_paper,
+    generate_speech: doctor_paper,
+    hr_service: doctor_paper,
 };
 
 
@@ -87,6 +90,7 @@ async function fetchKinds() {
             console.log("获取类型失败的错误处理")
         } else {
             allKinds.value = res.data;
+            console.log(allKinds.value)
         }
     } catch (error) {
         console.error('获取聊天记录失败:', error);

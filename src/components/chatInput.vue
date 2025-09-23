@@ -44,7 +44,7 @@
 
     <div class="chatInputContainer">
       <textarea name="chatinput" class="chatInput" :style="{ height: textareaHeight }" ref="chatInputArea"
-        @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : '问点什么'"
+        @input="onInput" @keydown="handleKeydown" :placeholder="props.session.type === '' ? '请选择类别' : placeholders[props.session.type] || '问点什么'"
         rows="1"></textarea>
     </div>
 
@@ -91,7 +91,10 @@ const toast = (message, type) => {
   })
 }
 
-
+const placeholders = {
+  generate_plan_report: `请输入报告或者方案名称，并给出一些内容要点。例如，西安电子科技大学关于深入学习贯彻习近平总书记在中国人民大学考察时重要讲话精神的实施方案。1. 传承红色基因，扎根中国大地办大学，走出一条建设中国特色、世界一流大学的新路；2.思政课的本质是讲道理，要注重方式方法，把道理讲深、讲透、讲活，老师要用心教，学生要用心悟，达到沟通心灵、启智润心、激扬斗志。`,
+  generate_speech: `请输入致辞主题，并给出一些内容要点。例如，以信息化带动学校治理体系与治理能力现代化，1.建设高质量教育体系；2.以人事制度为牵引的两体制两机制综合改革`
+}
 
 const chatInputArea = ref(null)
 const textareaHeight = ref("auto")
@@ -152,6 +155,14 @@ watch(id, () => {
   handleThink("", true);
   handlelr("", true);
   handleor("", true);
+})
+
+const type = computed(() => props.session.type)
+
+watch(type, () => {
+  if (type.value === "generate_plan_report" || type.value === "generate_speech" || type.value === 'hr_service') {
+    handlelr("")
+  }
 })
 
 function handleFileChange() {
