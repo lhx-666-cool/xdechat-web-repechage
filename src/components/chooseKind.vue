@@ -1,7 +1,7 @@
 <template>
     <div class="choose">
         <div class="title no-select">
-            欢迎使用<br>西电慧通大模型
+            欢迎使用<br>慧通大模型
         </div>
         <div class="feature-box no-select">
             <div class="feature">

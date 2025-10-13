@@ -22,11 +22,12 @@ FROM nginx:stable-alpine
 # 复制构建输出到 Nginx 的默认静态文件目录
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 复制自定义的 Nginx 配置文件（如果有的话）
-# COPY nginx.conf /etc/nginx/nginx.conf
+# 拷贝启动脚本（生成 env.js）
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# 暴露 Nginx 默认的 HTTP 端口
+# 声明一个可覆盖的环境变量（默认空）
+ENV API_URL=""
+
 EXPOSE 80
-
-# 启动 Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/entrypoint.sh"]
