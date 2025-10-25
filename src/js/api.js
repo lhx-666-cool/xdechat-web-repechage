@@ -188,6 +188,7 @@ function uploadFileFunc(file) {
             });
     });
 }
+
 export {
     getKinds,
     fetchStream,

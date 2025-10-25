@@ -16,7 +16,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item v-if="userName !== '未登录'" @click="logout">退出登录</el-dropdown-item>
-                <el-dropdown-item v-if="userName === '未登录'" @click="jump2Ids">点击登录</el-dropdown-item>
+                <el-dropdown-item v-if="userName === '未登录'">登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>

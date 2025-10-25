@@ -1,6 +1,8 @@
+import { ElMessage } from "element-plus";
 import {
     backendUrl
 } from "./globalVariables";
+import CryptoJS from 'crypto-js'
 
 function generateRandomString(length) {
     var result = '';
@@ -66,15 +68,20 @@ function scrollToBottomWithAnimation(className, duration = 500) {
 
 function jump2Ids() {
     window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://xdechat.xidian.edu.cn/"
+    // let url = new URL(window.location.href);
+    // url.searchParams.set('ticket', '114514');
+    // window.location.href = url.toString();
 }
 
 function login(ticket) {
+    console.log(ticket)
     fetch(backendUrl + '/login?ticket=' + ticket)
         .then(res => res.json())
         .then((res) => {
             localStorage.setItem('uid', res.uid);
             localStorage.setItem('username', res.userName)
             localStorage.setItem('access_token', res.access_token)
+            localStorage.setItem('type', 'xd')
             const currentUrl = window.location.href
             const url = new URL(currentUrl);
             url.search = '';
@@ -84,13 +91,85 @@ function login(ticket) {
             console.log(e)
         })
 }
+function loginByPassword(username, password) {
+    fetch(`${backendUrl}/login?username=${username}&password=${CryptoJS.SHA256(password).toString()}`)
+        .then(res => res.json())
+        .then((res) => {
+            if (res.code !== 200) {
+                ElMessage.error(res.message)
+                return
+            }
+            localStorage.setItem('uid', res.uid);
+            localStorage.setItem('username', res.userName)
+            localStorage.setItem('access_token', res.access_token)
+            localStorage.setItem('type', 'up')
+            const currentUrl = window.location.href
+            const url = new URL(currentUrl);
+            url.search = '';
+            window.location.href = url.href;
+        })
+        .catch((e) => {
+            console.log(e)
+        })
+}
+function validatePassword(password) {
+  if (password.length < 8) {
+    return "密码长度必须不少于 8 位";
+  }
 
-function logout() {
-    localStorage.clear();
-    window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/"
+  if (!/[A-Z]/.test(password)) {
+    return "密码必须包含至少一个大写字母";
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return "密码必须包含至少一个小写字母";
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return "密码必须包含至少一个数字";
+  }
+
+  return "";
+}
+function register(username, password, code) {
+    if (validatePassword(password) !== "") {
+        ElMessage.error(validatePassword(password));
+        return;
+    }
+    password = CryptoJS.SHA256(password).toString()
+    fetch(`${backendUrl}/register`, {
+        method: "POST",
+        body: JSON.stringify({
+            username,
+            password,
+            code
+        })
+    }).then(res => res.json())
+    .then(res => {
+        if (res.code !== 200) {
+            ElMessage.error(res.message);
+        }else {
+            ElMessage.success(res.message)
+        }
+    }).catch(e => {
+        ElMessage.error(e.message)
+    })
 }
 
-function isValid() {
+
+
+function logout() {
+    let type = localStorage.getItem('type')
+    localStorage.clear();
+    console.log(type)
+    if (type === 'xd') {
+        window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/"
+    }else {
+        window.location.reload()
+    }
+}
+
+function isValid(loginDialog) {
     fetch(backendUrl + '/valid', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -98,7 +177,8 @@ function isValid() {
         })
         .then(res => {
             if (res.status === 401) {
-                jump2Ids()
+                loginDialog.value = true
+                // jump2Ids()
             }
         })
 }
@@ -110,5 +190,7 @@ export {
     login,
     jump2Ids,
     logout,
-    isValid
+    isValid,
+    loginByPassword,
+    register
 }

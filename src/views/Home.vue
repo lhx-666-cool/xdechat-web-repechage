@@ -29,6 +29,41 @@
         </div>
       </div>
     </div>
+    <el-dialog
+    v-model="loginDialog"
+    width="500"
+    align-center
+    :before-close="() => {}"
+    :show-close="false"
+  >
+    <div class="loginDialog-content">
+      <div class="loginTitle">
+        <div class="login activate" @click="clickLogin">
+          登录
+        </div>
+        <div class="register" @click="clickRegister">
+          注册
+        </div>
+      </div>
+      <div class="input-box">
+        <el-input v-model="username" style="width: 100%; height: 50px; font-size: medium;" placeholder="用户名" />
+        <el-input v-model="password" style="width: 100%; height: 50px; font-size: medium" placeholder="密码" />
+        <el-input v-show="!islogin" v-model="code" style="width: 100%; height: 50px; font-size: medium" placeholder="邀请码" />
+        <el-button type="primary" v-if="islogin" style="height: 50px;" @click="handleLogin">登录</el-button>
+        <el-button type="primary" v-if="!islogin" style="height: 50px;" @click="handleRegister">注册</el-button>
+      </div>
+      <br>  
+    </div>
+    <el-divider />
+    <div class="ids" @click="jump2Ids">
+      <div>
+        <img src="https://www.xidian.edu.cn/favicon.ico" alt="西电LOGO" style="height: 40px;">
+      </div>
+      <div class="ids-text">
+        使用西安电子科技大学统一身份认证
+      </div>
+    </div>
+  </el-dialog>
   </div>
 </template>
 
@@ -42,10 +77,11 @@ import chatHistoryCard from '../components/chatHistoryCard.vue'
 import messageCard from "../components/messageCard.vue";
 import chooseKind from "../components/chooseKind.vue"
 import chatInput from "../components/chatInput.vue";
-import { getUid, scrollToBottomWithAnimation, login, isValid } from "../js/util";
+import { getUid, scrollToBottomWithAnimation, login, isValid, jump2Ids, register, loginByPassword } from "../js/util";
 import arrowLeft from '../assets/arrowleft.svg'
 import { onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
+import { ElMessage } from "element-plus";
 const store = useStore();
 
 const componentHeight = ref('100vh')
@@ -64,15 +100,38 @@ onUnmounted(() => {
 
 const isCollapsed = ref(false); // 使用ref来创建响应式变量
 const activateId = ref("")
+const loginDialog = ref(false)
+const islogin = ref(true)
+const username = ref("")
+const password = ref("")
+const code = ref("")
+
+const clickLogin = () => {
+  $(".login").addClass("activate")
+  $(".register").removeClass("activate")
+  islogin.value = true
+}
+
+const clickRegister = () => {
+  $(".register").addClass("activate")
+  $(".login").removeClass("activate")
+  islogin.value = false
+}
+
+const handleLogin = () => {
+  loginByPassword(username.value, password.value)
+}
+const handleRegister = () => {
+  let result = register(username.value, password.value, code.value)
+}
 onMounted(() => {
   store.dispatch('setInputOccupied', false);
   const queryParams = new URLSearchParams(window.location.search);
   const ticket = queryParams.get('ticket');
   if (ticket !== null) {
-    console.log('Ticket:', ticket);
     login(ticket)
   } else {
-    isValid()
+    isValid(loginDialog)
   }
   const screenWidth = window.innerWidth;
   if (screenWidth <= 768) {
@@ -178,7 +237,6 @@ const handleDeleteMessage = (idx) => {
     session_list.value.push(new Session());
   }
   choice(session_list.value[min(idx, session_list.value.length - 1)].id, min(idx, session_list.value.length - 1))
-
 }
 
 
@@ -316,5 +374,50 @@ const handleDeleteMessage = (idx) => {
   font-family: 'NotoSansSC-Regular';
   font-size: 18px;
   color: #141414;
+}
+
+.loginTitle {
+  display: flex;
+  justify-content: space-around;
+  font-size: medium;
+  background-color: rgba(128, 128, 128, 0.2);
+  border-radius: 4px;
+  color: #424242;
+  margin-bottom: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  cursor: pointer;
+}
+.login, .register {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  width: calc(50% - 4px);
+  text-align: center;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+.activate{
+  background-color: #fff;
+  color: #409FFF;
+}
+.input-box{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ids {
+  height: 50px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #DDDFE6A0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.ids-text {
+  font-size: medium;
+  color: #424242;
 }
 </style>
