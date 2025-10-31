@@ -67,7 +67,7 @@ function scrollToBottomWithAnimation(className, duration = 500) {
 }
 
 function jump2Ids() {
-    window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://xdechat.xidian.edu.cn/"
+    window.location.href = "https://ids.xidian.edu.cn/authserver/login?service=https://huitong.xidian.edu.cn/"
     // let url = new URL(window.location.href);
     // url.searchParams.set('ticket', '114514');
     // window.location.href = url.toString();
@@ -163,7 +163,7 @@ function logout() {
     localStorage.clear();
     console.log(type)
     if (type === 'xd') {
-        window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://xdechat.xidian.edu.cn/"
+        window.location.href = "https://ids.xidian.edu.cn/authserver/logout?service=https://huitong.xidian.edu.cn/"
     }else {
         window.location.reload()
     }
