@@ -11,12 +11,12 @@
                 <div class="learn  tag" @click="chooseKind(1, 'learn')">
                     学
                 </div>
-                <div class="admin  tag" @click="chooseKind(2, 'admin')">
+                <!-- <div class="admin  tag" @click="chooseKind(2, 'admin')">
                     管
                 </div>
                 <div class="review  tag" @click="chooseKind(3, 'review')">
                     评
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -187,7 +187,7 @@ function choose(key) {
 }
 
 .tag {
-    width: 25%;
+    width: 50%;
     height: 40px;
     line-height: 40px;
     text-align: center;
@@ -219,7 +219,7 @@ function choose(key) {
 
 }
 
-.review {
+.learn {
     border-radius: 0 50px 50px 0;
     border-left: 2px solid rgb(58, 139, 255);
 }
